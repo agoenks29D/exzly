@@ -80,7 +80,7 @@
   "devDependencies": {
     "@eslint/js": "^9.27.0",
     "@faker-js/faker": "^9.8.0",
-    "@types/compression": "^1.7.5",
+    "@types/compression": "^1.8.0",
     "@types/cors": "^2.8.17",
     "@types/crypto-js": "^4.2.2",
     "@types/debug": "^4.1.12",
