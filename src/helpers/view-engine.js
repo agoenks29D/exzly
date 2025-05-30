@@ -31,20 +31,20 @@ const getQueryParams = (req, key = undefined) => {
  * @returns {string[]}
  */
 const uriSegments = (req) => {
-  const reqParams = req.path;
+  const reqParams = req.originalUrl;
   return reqParams.split('/').filter((value) => value.trim() !== '');
 };
 
 /**
  * Checks if the specified segment of the URI matches the given text.
  *
- * @param {object} req - The request object, typically from an Express.js route handler.
+ * @param {import('express').Request} req - The request object, typically from an Express.js route handler.
  * @param {string} text - The text to match against a URI segment.
  * @param {number} [num=0] - The index of the URI segment to check (default is 0 for the first segment).
  * @returns {boolean} True if the URI segment matches the given text, otherwise false.
  */
 const uriSegmentMatches = (req, text, num = 0) => {
-  const reqParams = req.path;
+  const reqParams = req.originalUrl;
   const filtered = reqParams.split('/').filter((value) => value.trim() !== '');
 
   if (filtered.length > 0) {

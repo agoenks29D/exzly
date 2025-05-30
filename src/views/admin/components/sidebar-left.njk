@@ -25,7 +25,7 @@
         </li>
 
         <li class="nav-item">
-          <a href="{{ adminRoute('/users') }}" class="nav-link {{ "active" if uriSegmentMatches('users') }}">
+          <a href="{{ adminRoute('/users') }}" class="nav-link {{ "active" if uriSegmentMatches('users', 1) }}">
             <i class="nav-icon fas fa-users"></i>
             <p>Users</p>
           </a>
