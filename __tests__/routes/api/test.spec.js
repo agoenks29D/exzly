@@ -117,7 +117,7 @@ describe('RESTful-API: Test', () => {
     it('test 4: should return 401 when valid token does not exist in the database', async () => {
       await request(app)
         .get(createRoute('api', '/test/access-token'))
-        .set('Authorization', `Bearer ${jwtHelper.createUserToken('access-token', 1)}`)
+        .set('Authorization', `Bearer ${jwtHelper.createUserToken('access-token', 200)}`)
         .expect(401);
     });
 
