@@ -99,7 +99,7 @@
     "@types/sequelize": "^4.28.20",
     "@types/session-file-store": "^1.2.5",
     "@types/uuid": "^10.0.0",
-    "eslint": "^9.25.0",
+    "eslint": "^9.27.0",
     "form-data": "^4.0.2",
     "globals": "^16.2.0",
     "husky": "^9.1.7",
