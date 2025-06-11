@@ -55,6 +55,7 @@ const createRoute = (routeName, routePath = '') => {
   return route.replace(/\/{2,}/g, '/');
 };
 </script>
+<script src="/ws/socket.io.min.js"></script>
 <script src="{{ assetsUrl('/public/assets/adminLTE-3.2.0/plugins/jquery/jquery.min.js') }}"></script>
 <script src="{{ assetsUrl('/public/assets/adminLTE-3.2.0/plugins/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
 <script src="{{ assetsUrl('/public/assets/adminLTE-3.2.0/js/adminlte.min.js') }}"></script>

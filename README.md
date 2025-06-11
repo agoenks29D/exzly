@@ -135,9 +135,10 @@ Exzly is built using modern, battle-tested technologies that prioritize performa
   ├─ utils/                # Utility modules (e.g., logger, debugger, JWT)
   ├─ validators/           # Request validation using express-validator
   └─ views/                # Nunjucks templates
-     ├─ admin/             # Nunjucks templates for admin views
-     ├─ email/             # Templates for email
-     └─ web/               # Public site templates
+  │  ├─ admin/             # Nunjucks templates for admin views
+  │  ├─ email/             # Templates for email
+  │  └─ web/               # Public site templates
+  └─ websocket/            # WebSocket logic and event handlers
 ```
 
 ## 🏁 Getting Started
