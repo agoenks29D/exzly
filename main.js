@@ -12,6 +12,7 @@ let server;
 const routes = require('@exzly-routes');
 const { sequelize } = require('@exzly-models');
 const { winstonLogger } = require('@exzly-utils');
+const { websocket } = require('@exzly-websocket');
 
 const checkPortAvailability = (port) => {
   return new Promise((resolve) => {
@@ -53,6 +54,9 @@ const tryListeningPort = async (startPort) => {
   }
 
   server.on('listening', async () => {
+    // attach http to websocket
+    websocket.attach(server);
+
     if (process.env.NODE_ENV === 'development') {
       await sequelize.sync({
         [process.env.DB_MODE]: process.env.DB_SYNC === 'true',
