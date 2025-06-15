@@ -8,6 +8,7 @@
 ![GitHub Release](https://img.shields.io/github/v/release/agoenks29D/exzly)
 ![GitHub License](https://img.shields.io/github/license/agoenks29D/exzly)
 ![GitHub Code Size](https://img.shields.io/github/languages/code-size/agoenks29D/exzly)
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fagoenks29D%2Fexzly.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2Fagoenks29D%2Fexzly?ref=badge_shield)
 
 [![CI - Setup, Test & Coverage](https://github.com/agoenks29D/exzly/actions/workflows/ci.yml/badge.svg?branch=develop)](https://github.com/agoenks29D/exzly/actions/workflows/ci.yml)
 ![Codecov](https://img.shields.io/codecov/c/github/agoenks29D/exzly)
@@ -330,3 +331,6 @@ npm run test:cov
 ## 📄 License
 
 Exzly is distributed under the [MIT License](./LICENSE).
+
+
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fagoenks29D%2Fexzly.svg?type=large)](https://app.fossa.com/projects/git%2Bgithub.com%2Fagoenks29D%2Fexzly?ref=badge_large)
