@@ -1,0 +1,33 @@
+{
+  "name": "exzly-client",
+  "version": "0.0.1",
+  "main": "webpack.config.js",
+  "scripts": {
+    "dev": "webpack --watch",
+    "build": "webpack --env production"
+  },
+  "keywords": [],
+  "author": "Agung Dirgantara <agungmasda29@gmail.com>",
+  "license": "MIT",
+  "description": "",
+  "dependencies": {
+    "firebase": "^11.9.1",
+    "localforage": "^1.10.0",
+    "workbox-expiration": "^7.3.0",
+    "workbox-routing": "^7.3.0",
+    "workbox-strategies": "^7.3.0",
+    "workbox-window": "^7.3.0"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.19.0",
+    "@types/serviceworker": "^0.0.119",
+    "compression-webpack-plugin": "^11.1.0",
+    "eslint": "^9.19.0",
+    "globals": "^15.14.0",
+    "terser-webpack-plugin": "^5.3.11",
+    "ts-loader": "^9.5.2",
+    "typescript-eslint": "^8.23.0",
+    "webpack": "^5.97.1",
+    "webpack-cli": "^6.0.1"
+  }
+}

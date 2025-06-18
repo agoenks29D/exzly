@@ -16,8 +16,8 @@
     "node": ">=20"
   },
   "scripts": {
-    "start": "node --experimental-vm-modules --no-warnings main.js",
-    "start:dev": "nodemon",
+    "start": "concurrently \"node --experimental-vm-modules --no-warnings main.js\" \"cd client && npx webpack --env production\"",
+    "start:dev": "concurrently \"nodemon\" \"cd client && npx webpack --watch\"",
     "db:demo": "sequelize-cli db:migrate --name base.js && sequelize-cli db:seed --seed demo",
     "db:start": "sequelize-cli db:migrate --name base.js && sequelize-cli db:seed --seed start",
     "predb:test": "npx sequelize-cli db:migrate:undo --env test",
@@ -103,6 +103,7 @@
     "@types/sequelize": "^4.28.20",
     "@types/session-file-store": "^1.2.5",
     "@types/uuid": "^10.0.0",
+    "concurrently": "^9.1.2",
     "eslint": "^9.28.0",
     "form-data": "^4.0.3",
     "globals": "^16.2.0",

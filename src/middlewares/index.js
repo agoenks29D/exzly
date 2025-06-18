@@ -15,6 +15,7 @@ const authMiddleware = require('./auth');
 const storageMiddleware = require('./storage');
 const fileLoaderMiddleware = require('./file-loader');
 const viewEngineMiddleware = require('./view-engine');
+const serveStaticMiddleware = require('./serve-static');
 
 /**
  * Async handler middleware to automatically handle errors in async route handlers.
@@ -64,4 +65,5 @@ module.exports = {
   fileLoaderMiddleware,
   viewEngineMiddleware,
   storageMiddleware,
+  serveStaticMiddleware,
 };

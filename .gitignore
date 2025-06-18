@@ -6,3 +6,5 @@ notes/
 logs/
 .env
 *.bak.*
+public/service-worker/
+public/exzly.bundle.js
