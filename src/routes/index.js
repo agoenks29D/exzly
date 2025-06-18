@@ -8,6 +8,7 @@ const {
   viewEngineMiddleware,
   fileLoaderMiddleware,
   sessionMiddleware,
+  serveStaticMiddleware,
 } = require('@exzly-middlewares');
 const { getRouteName } = require('@exzly-utils');
 const apiRoutes = require('./api');
@@ -33,6 +34,11 @@ const helmetMiddleware = helmet({
       ],
       scriptSrc: ["'self'", (req, res) => `'nonce-${res.locals.nonce}'`],
       scriptSrcAttr: [(req, res) => `'nonce-${res.locals.nonce}'`],
+      connectSrc: [
+        "'self'",
+        'https://firebaseinstallations.googleapis.com',
+        'https://fcmregistrations.googleapis.com',
+      ],
       // reportUri: `${process.env.API_ROUTE}/csp-violation-report`,
     },
   },
@@ -59,7 +65,8 @@ app.use(
 app.use(compression());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use('/public', express.static('public'));
+app.use('/', serveStaticMiddleware.serviceWorker);
+app.use('/public', serveStaticMiddleware.publicDir);
 app.use(helmetMiddleware.unless({ path: ['/public'] }));
 app.use('/storage/user-photos/:file', fileLoaderMiddleware.imageLoader.diskStorage('user-photos'));
 

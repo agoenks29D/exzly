@@ -31,6 +31,8 @@ Whether you're creating a business platform, a complex service, or a company-gra
 - [🏁 Getting Started](#-getting-started)
   - [Environment Setup](#environment-setup)
   - [Security Settings](#security-settings)
+  - [Client-Side Setup](#client-side-setup)
+    - [Firebase Setup](#firebase-setup)
 - [🌱 Migration and Seeder](#-migration-and-seeder)
 - [🧹 Linter and Formatter](#-linter-and-formatter)
 - [🚀 Running the Project](#-running-the-project)
@@ -161,11 +163,13 @@ To get started with Exzly, follow the steps below:
    npm install
    ```
 
-4. Configure the database settings in the [`/database/config.json`](/database/config.json) file according to your environment.
+4. Setup client-side dependencies, refer to [Client-Side Setup](#client-side-setup)
 
-5. Before starting the application, you need to set up the database. You can choose between demo data (for development) or production-ready setup. See more options in the [Migration and Seeder](#-migration-and-seeder) section.
+5. Configure the database settings in the [`/database/config.json`](/database/config.json) file according to your environment.
 
-6. Now, you're ready to run the app! refer to the 👉 [Running the Project](#-running-the-project) section.
+6. Before starting the application, you need to set up the database. You can choose between demo data (for development) or production-ready setup. See more options in the [Migration and Seeder](#-migration-and-seeder) section.
+
+7. Now, you're ready to run the app! refer to the 👉 [Running the Project](#-running-the-project) section.
 
 ### Environment Setup
 
@@ -210,10 +214,48 @@ Below is the list of environment variables that need to be configured in the `.e
 | `WEB_ROUTE`          | Base route for web pages                                                                                   | `/`                               | `secret`                          |
 | `API_ROUTE`          | Base route for API endpoints                                                                               | `/api`                            | `secret`                          |
 | `ADMIN_ROUTE`        | Base route for admin panel                                                                                 | `/admin`                          | `secret`                          |
+| **Web Push**         |                                                                                                            |                                   |                                   |
+| `PUBLIC_VAPID_KEY`   | Public key for VAPID (Voluntary Application Server Identification) for Web Push Notifications              | `BFC0B3D8B4D8F1...`               | `secret`                          |
 
 ### Security Settings
 
 Modify the security configurations in the [`/src/config/security.js`](/src/config/security.js) file.
+
+### Client-Side Setup
+
+After installing the main project dependencies, the next step is to install the dependencies for the client application. Based on the project structure, the client/ directory contains the frontend part of the application, separate from the backend. Follow the steps below to set up the client:
+
+1. Navigate to the Client Directory:
+   Change to the [`client/`](client/) directory, which is located inside the root of the project:
+
+   ```bash
+   cd client/
+   ```
+
+2. Install Dependencies:
+   Once inside the [`client/`](client/) directory, run the following command to install all the required packages listed in the [`client/package.json`](client/package.json) file:
+
+   ```bash
+   npm install
+   ```
+
+#### Firebase Setup
+
+To integrate Firebase with Exzly, follow the steps below to configure Firebase services like authentication, messaging, and storage in your app.
+
+1. Obtain your Firebase configuration object from the [Firebase Console](https://console.firebase.google.com).
+2. Add the configuration object in the [`client/src/config/index.ts`](client/src/config/index.ts) file:
+   ```ts
+   const firebaseConfig: FirebaseOptions = {
+     apiKey: 'your-api-key',
+     authDomain: 'your-auth-domain',
+     projectId: 'your-project-id',
+     storageBucket: 'your-storage-bucket',
+     messagingSenderId: 'your-messaging-sender-id',
+     appId: 'your-app-id',
+     measurementId: 'your-measurement-id',
+   };
+   ```
 
 ## 🌱 Migration and Seeder
 

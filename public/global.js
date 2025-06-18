@@ -19,30 +19,25 @@ window.showHidePassword = (element) => {
   const inputElement = $($(element).parent()).children('input');
   if (inputElement.attr('type') === 'password') {
     inputElement.attr('type', 'text');
-    $($(element).children())
-      .children('span')
-      .removeClass('fa-eye-slash')
-      .addClass('fa-eye');
+    $($(element).children()).children('span').removeClass('fa-eye-slash').addClass('fa-eye');
   } else {
     inputElement.attr('type', 'password');
-    $($(element).children())
-      .children('span')
-      .removeClass('fa-eye')
-      .addClass('fa-eye-slash');
+    $($(element).children()).children('span').removeClass('fa-eye').addClass('fa-eye-slash');
   }
-}
+};
 
 const ucfirst = (str) => {
   if (!str) return str;
   return str.charAt(0).toUpperCase() + str.slice(1);
-}
+};
 
-const SwalToast = (position = 'top-end', timer = 6000) => Swal.mixin({
-  toast: true,
-  position,
-  showConfirmButton: false,
-  timer,
-});
+const SwalToast = (position = 'top-end', timer = 6000) =>
+  Swal.mixin({
+    toast: true,
+    position,
+    showConfirmButton: false,
+    timer,
+  });
 
 const setFormDisabled = (state = true, formElement) => {
   if (formElement) {
@@ -68,5 +63,46 @@ jQuery(() => {
     localStorage.removeItem('access-token');
     localStorage.removeItem('refresh-token');
     window.location.href = $(this).attr('href');
+  });
+
+  const { serviceWorkerManager } = Exzly;
+
+  if (serviceWorkerManager.isSupported()) {
+    serviceWorkerManager.isRegistered().then((isRegistered) => {
+      if (isRegistered && Notification.permission === 'default') {
+        serviceWorkerManager.subscribeWebPush().then(
+          (subscription) => {
+            console.log({ subscription });
+          },
+          (error) => {
+            console.log({ error });
+          },
+        );
+      }
+
+      serviceWorkerManager.subscribeWebPush().then(
+        (subscription) => {
+          console.log({ subscription });
+        },
+        (error) => {
+          console.log({ error });
+        },
+      );
+
+      if (!isRegistered) {
+        serviceWorkerManager.register().then(
+          (registration) => {
+            console.log('registered', registration);
+          },
+          (error) => {
+            console.error('Registration error', error);
+          },
+        );
+      }
+    });
+  }
+
+  serviceWorkerManager.onMessage((data) => {
+    console.log('onMESSAGE', { data });
   });
 });
