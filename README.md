@@ -10,7 +10,7 @@
 ![GitHub Code Size](https://img.shields.io/github/languages/code-size/agoenks29D/exzly)
 
 [![CI - Setup, Test & Coverage](https://github.com/agoenks29D/exzly/actions/workflows/ci.yml/badge.svg?branch=develop)](https://github.com/agoenks29D/exzly/actions/workflows/ci.yml)
-![Codecov](https://img.shields.io/codecov/c/github/agoenks29D/exzly)
+[![codecov](https://codecov.io/gh/agoenks29D/exzly/branch/develop/graph/badge.svg?token=7UVW9XHW3Y)](https://codecov.io/gh/agoenks29D/exzly)
 
 ## 📖 Description
 
