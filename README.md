@@ -11,7 +11,7 @@
 [![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fagoenks29D%2Fexzly.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2Fagoenks29D%2Fexzly?ref=badge_shield)
 
 [![CI - Setup, Test & Coverage](https://github.com/agoenks29D/exzly/actions/workflows/ci.yml/badge.svg?branch=develop)](https://github.com/agoenks29D/exzly/actions/workflows/ci.yml)
-[![codecov](https://codecov.io/gh/agoenks29D/exzly/branch/develop/graph/badge.svg?token=7UVW9XHW3Y)](https://codecov.io/gh/agoenks29D/exzly)
+[![codecov](https://codecov.io/gh/agoenks29D/exzly/branch/main/graph/badge.svg?token=7UVW9XHW3Y)](https://codecov.io/gh/agoenks29D/exzly)
 
 ## 📖 Description
 
@@ -340,6 +340,5 @@ You can explore and test all available API endpoints using our public Postman do
 ## 📄 License
 
 Exzly is distributed under the [MIT License](./LICENSE).
-
 
 [![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fagoenks29D%2Fexzly.svg?type=large)](https://app.fossa.com/projects/git%2Bgithub.com%2Fagoenks29D%2Fexzly?ref=badge_large)
