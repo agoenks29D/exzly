@@ -1,5 +1,19 @@
 # Changelog
 
+## [1.1.0] - 2025-06-14
+
+### Added
+
+- Admin panel sidebar now persists its open/closed state between page reloads and navigation for improved user experience.
+- Added links in the README to:
+  - The GitHub Wiki for detailed project documentation.
+  - The Postman public API collection for easier API exploration and testing.
+
+### Changed
+
+- Updated Codecov badge in README to point to the main branch instead of develop.
+- Replaced Codecov badge with token-authenticated version for more reliable coverage reporting.
+
 ## [1.0.0] - 2025-06-14
 
 ### Added
