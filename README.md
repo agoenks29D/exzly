@@ -20,6 +20,8 @@ With a robust architecture, built-in features, and production-ready configuratio
 
 Whether you're creating a business platform, a complex service, or a company-grade application, Exzly offers a flexible and extensible foundation tailored to enterprise needs.
 
+👉 For more detailed documentation and implementation guidelines, please visit the [Exzly Documentation](https://github.com/agoenks29D/exzly/wiki).
+
 ## 📚 Table of Contents
 
 - [📖 Description](#-description)
@@ -35,6 +37,7 @@ Whether you're creating a business platform, a complex service, or a company-gra
 - [🧹 Linter and Formatter](#-linter-and-formatter)
 - [🚀 Running the Project](#-running-the-project)
 - [🧪 Running Tests](#-running-tests)
+- [📬 API Documentation (Postman)](#-api-documentation-postman)
 - [👤 Default Account](#-default-account)
 - [📄 License](#-license)
 
@@ -318,6 +321,12 @@ Run test coverage:
 ```bash
 npm run test:cov
 ```
+
+## 📬 API Documentation (Postman)
+
+You can explore and test all available API endpoints using our public Postman documentation:
+
+👉 [View Exzly Postman Collection](https://www.postman.com/medansoftware/public-projects/collection/sp6dra0/exzly)
 
 ## 👤 Default Account
 
