@@ -11,7 +11,7 @@
 [![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fagoenks29D%2Fexzly.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2Fagoenks29D%2Fexzly?ref=badge_shield)
 
 [![CI - Setup, Test & Coverage](https://github.com/agoenks29D/exzly/actions/workflows/ci.yml/badge.svg?branch=develop)](https://github.com/agoenks29D/exzly/actions/workflows/ci.yml)
-![Codecov](https://img.shields.io/codecov/c/github/agoenks29D/exzly)
+[![codecov](https://codecov.io/gh/agoenks29D/exzly/branch/develop/graph/badge.svg?token=7UVW9XHW3Y)](https://codecov.io/gh/agoenks29D/exzly)
 
 ## 📖 Description
 
@@ -20,6 +20,8 @@
 With a robust architecture, built-in features, and production-ready configuration, Exzly accelerates development without compromising quality. It’s ideal for building internal tools, admin panels, business dashboards, or custom backend services.
 
 Whether you're creating a business platform, a complex service, or a company-grade application, Exzly offers a flexible and extensible foundation tailored to enterprise needs.
+
+👉 For more detailed documentation and implementation guidelines, please visit the [Exzly Documentation](https://github.com/agoenks29D/exzly/wiki).
 
 ## 📚 Table of Contents
 
@@ -36,6 +38,7 @@ Whether you're creating a business platform, a complex service, or a company-gra
 - [🧹 Linter and Formatter](#-linter-and-formatter)
 - [🚀 Running the Project](#-running-the-project)
 - [🧪 Running Tests](#-running-tests)
+- [📬 API Documentation (Postman)](#-api-documentation-postman)
 - [👤 Default Account](#-default-account)
 - [📄 License](#-license)
 
@@ -319,6 +322,12 @@ Run test coverage:
 ```bash
 npm run test:cov
 ```
+
+## 📬 API Documentation (Postman)
+
+You can explore and test all available API endpoints using our public Postman documentation:
+
+👉 [View Exzly Postman Collection](https://www.postman.com/medansoftware/public-projects/collection/sp6dra0/exzly)
 
 ## 👤 Default Account
 
