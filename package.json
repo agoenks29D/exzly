@@ -51,7 +51,7 @@
     "cors": "^2.8.5",
     "crypto-js": "^4.2.0",
     "debug": "^4.4.1",
-    "dotenv": "^16.5.0",
+    "dotenv": "^17.0.1",
     "express": "^4.21.1",
     "express-list-endpoints": "^7.1.1",
     "express-rate-limit": "^7.5.0",
