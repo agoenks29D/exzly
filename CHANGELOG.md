@@ -1,5 +1,21 @@
 # Changelog
 
+## [1.2.0] - 2025-07-02
+
+### Changed
+
+- Removed FOSSA badges from README to clean up unused license tracking service.
+
+### Dependency Updates
+
+- Bumped multiple dependencies for security and compatibility improvements:
+  - `@eslint/js` → 9.30.1
+  - `dotenv` → 17.0.1
+  - `globals` → 16.3.0
+  - `jest` → 30.0.3
+  - `nodemailer` → 7.0.4
+  - `brace-expansion` → 1.1.12
+
 ## [1.1.0] - 2025-06-14
 
 ### Added
