@@ -17,13 +17,13 @@ module.exports = (sequelize, DataTypes) => {
       const order = [];
       const where = {};
       const reqQuery = qs.parse(req.query);
+      const fieldsName = Object.keys(UserModel.getAttributes());
 
       /**
        * Order query
        */
       if (Object.hasOwn(reqQuery, 'order') && Array.isArray(reqQuery.order)) {
         reqQuery.order.forEach((item) => {
-          const fieldsName = UserModel.getAttributes();
           const fieldExist = Object.keys(fieldsName).indexOf(item.name) !== -1;
 
           if (fieldExist) {
@@ -82,7 +82,6 @@ module.exports = (sequelize, DataTypes) => {
             if (Object.hasOwn(column, 'name') && Object.hasOwn(column, 'search')) {
               if (column['search']?.value && column['search'].value.length > 0) {
                 if (column['search']?.regex === 'true') {
-                  const fieldsName = UserModel.getAttributes();
                   if (Object.keys(fieldsName).indexOf(column['name']) !== -1) {
                     Object.assign(where, {
                       [column['name']]: {
@@ -91,7 +90,6 @@ module.exports = (sequelize, DataTypes) => {
                     });
                   }
                 } else {
-                  const fieldsName = UserModel.getAttributes();
                   if (Object.keys(fieldsName).indexOf(column['name']) !== -1) {
                     if (column['name'] === 'gender') {
                       Object.assign(where, {
