@@ -2,31 +2,26 @@
 module.exports = {
   async up(queryInterface, Sequelize) {
     await queryInterface.createTable(
-      'users',
+      'auth_provider',
       {
         id: {
           allowNull: false,
-          primaryKey: true,
           autoIncrement: true,
+          primaryKey: true,
           type: Sequelize.INTEGER,
         },
-        email: {
+        provider: {
           type: Sequelize.STRING,
           allowNull: false,
         },
-        username: Sequelize.STRING,
-        password: Sequelize.STRING,
-        is_admin: {
-          type: Sequelize.BOOLEAN,
-          allowNull: false,
-          defaultValue: false,
-        },
-        gender: Sequelize.ENUM('male', 'female'),
-        full_name: {
+        provider_id: {
           type: Sequelize.STRING,
           allowNull: false,
         },
-        photo_profile: Sequelize.STRING,
+        metadata: {
+          type: Sequelize.JSON,
+          allowNull: true,
+        },
         created_at: {
           allowNull: false,
           type: Sequelize.DATE,
@@ -35,20 +30,23 @@ module.exports = {
           allowNull: false,
           type: Sequelize.DATE,
         },
-        deleted_at: {
-          allowNull: true,
-          type: Sequelize.DATE,
-        },
       },
       {
         charset: 'utf8mb4',
         collate: 'utf8mb4_unicode_ci',
       },
     );
+
+    await queryInterface.addConstraint('auth_provider', {
+      type: 'unique',
+      name: 'auth_provider_provider_provider_id',
+      fields: ['provider', 'provider_id'],
+    });
   },
+
   async down(queryInterface) {
-    if (await queryInterface.tableExists('users')) {
-      await queryInterface.dropTable('users');
+    if (await queryInterface.tableExists('auth_provider')) {
+      await queryInterface.dropTable('auth_provider');
     }
   },
 };

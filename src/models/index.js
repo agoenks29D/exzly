@@ -6,6 +6,7 @@
  * @typedef {Object} DB
  * @property {import('sequelize').Sequelize} sequelize - Database.
  * @property {typeof import('sequelize').Sequelize} Sequelize - Sequelize.
+ * @property {Model} AuthProviderModel - Auth provider model.
  * @property {Model} AuthTokenModel - Auth token model.
  * @property {Model} AuthVerifyModel - Auth verify model.
  * @property {Model} UserModel - User model.
