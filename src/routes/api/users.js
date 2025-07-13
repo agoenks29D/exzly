@@ -207,7 +207,7 @@ app.put(
     }
 
     if (req.query.remove === 'true') {
-      await user.update({ photo_profile: null });
+      await user.update({ photoProfile: null });
     }
 
     if (req.file) {
