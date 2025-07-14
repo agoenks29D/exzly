@@ -185,40 +185,6 @@ jQuery(() => {
           },
         },
       ],
-      drawCallback: function () {
-        const api = this.api();
-        $('#users-table tbody').on('click', 'a[row-option]', function () {
-          const row = $(this).attr('row-id');
-          const data = api.row(row).data();
-          const option = $(this).attr('row-option');
-
-          if (option === 'overview') {
-            handleOverviewData(row, api.row(row).data());
-          } else if (option === 'delete') {
-            handleDeleteData(row, data);
-          } else if (option === 'force-delete') {
-            handleDeleteData(row, data, true);
-          } else if (option === 'restore') {
-            handleRestoreData(row, data);
-          }
-        });
-
-        $(document).on('click', '#delete-user', function (e) {
-          e.preventDefault();
-          const rowId = $(this).attr('row-id');
-          $('.modal-backdrop').remove();
-          $('.widget-user-modal').modal('hide').remove();
-          handleDeleteData(rowId, api.row(rowId).data(), getQueryParams('in-trash') === 'true');
-        });
-
-        $(document).on('click', '#remove-photo-profile', function (e) {
-          e.preventDefault();
-          const rowId = $(this).attr('row-id');
-          $('.modal-backdrop').remove();
-          $('.widget-user-modal').modal('hide').remove();
-          handleRemovePhotoProfile(rowId, api.row(rowId).data());
-        });
-      },
       // Uncomment this part to enable individual column searching
       // initComplete: function () {
       //   this.api()
@@ -247,6 +213,39 @@ jQuery(() => {
         json.recordsFiltered = xhr.getResponseHeader('X-Filtered-Count');
       }
     });
+
+
+  $('#users-table tbody').on('click', 'a[row-option]', function () {
+    const row = $(this).attr('row-id');
+    const data = usersTable.row(row).data();
+    const option = $(this).attr('row-option');
+
+    if (option === 'overview') {
+      handleOverviewData(row, usersTable.row(row).data());
+    } else if (option === 'delete') {
+      handleDeleteData(row, data);
+    } else if (option === 'force-delete') {
+      handleDeleteData(row, data, true);
+    } else if (option === 'restore') {
+      handleRestoreData(row, data);
+    }
+  });
+
+  $(document).on('click', '#delete-user', function (e) {
+    e.preventDefault();
+    const rowId = $(this).attr('row-id');
+    $('.modal-backdrop').remove();
+    $('.widget-user-modal').modal('hide').remove();
+    handleDeleteData(rowId, usersTable.row(rowId).data(), getQueryParams('in-trash') === 'true');
+  });
+
+  $(document).on('click', '#remove-photo-profile', function (e) {
+    e.preventDefault();
+    const rowId = $(this).attr('row-id');
+    $('.modal-backdrop').remove();
+    $('.widget-user-modal').modal('hide').remove();
+    handleRemovePhotoProfile(rowId, usersTable.row(rowId).data());
+  });
 
   /**
    * Handle overview data
