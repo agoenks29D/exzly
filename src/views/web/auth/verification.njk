@@ -43,6 +43,7 @@
 {% block page_script %}
 <script type="text/javascript" nonce="{{ nonce }}">
 jQuery(() => {
+  $('input#code').focus();
   $('form#verification').on('submit', (e) => {
     e.preventDefault();
 

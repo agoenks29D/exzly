@@ -68,6 +68,7 @@
 {% block page_script %}
 <script type="text/javascript" nonce="{{ nonce }}">
 jQuery(() => {
+  $('input#identity').focus();
   $('#password-toggle').on('click', function (e) {
     e.preventDefault();
     showHidePassword(this);
