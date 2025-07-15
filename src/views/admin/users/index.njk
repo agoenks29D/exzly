@@ -185,32 +185,6 @@ jQuery(() => {
           },
         },
       ],
-      drawCallback: function () {
-        const api = this.api();
-        $('#users-table tbody').on('click', 'a[row-option]', function () {
-          const row = $(this).attr('row-id');
-          const data = api.row(row).data();
-          const option = $(this).attr('row-option');
-
-          if (option === 'overview') {
-            handleOverviewData(row, api.row(row).data());
-          } else if (option === 'delete') {
-            handleDeleteData(row, data);
-          } else if (option === 'force-delete') {
-            handleDeleteData(row, data, true);
-          } else if (option === 'restore') {
-            handleRestoreData(row, data);
-          }
-        });
-
-        $(document).on('click', '#delete-user', function (e) {
-          e.preventDefault();
-          const rowId = $(this).attr('row-id');
-          $('.modal-backdrop').remove();
-          $('.widget-user-modal').modal('hide').remove();
-          handleDeleteData(rowId, api.row(rowId).data(), getQueryParams('in-trash') === 'true');
-        });
-      },
       // Uncomment this part to enable individual column searching
       // initComplete: function () {
       //   this.api()
@@ -239,6 +213,39 @@ jQuery(() => {
         json.recordsFiltered = xhr.getResponseHeader('X-Filtered-Count');
       }
     });
+
+
+  $('#users-table tbody').on('click', 'a[row-option]', function () {
+    const row = $(this).attr('row-id');
+    const data = usersTable.row(row).data();
+    const option = $(this).attr('row-option');
+
+    if (option === 'overview') {
+      handleOverviewData(row, usersTable.row(row).data());
+    } else if (option === 'delete') {
+      handleDeleteData(row, data);
+    } else if (option === 'force-delete') {
+      handleDeleteData(row, data, true);
+    } else if (option === 'restore') {
+      handleRestoreData(row, data);
+    }
+  });
+
+  $(document).on('click', '#delete-user', function (e) {
+    e.preventDefault();
+    const rowId = $(this).attr('row-id');
+    $('.modal-backdrop').remove();
+    $('.widget-user-modal').modal('hide').remove();
+    handleDeleteData(rowId, usersTable.row(rowId).data(), getQueryParams('in-trash') === 'true');
+  });
+
+  $(document).on('click', '#remove-photo-profile', function (e) {
+    e.preventDefault();
+    const rowId = $(this).attr('row-id');
+    $('.modal-backdrop').remove();
+    $('.widget-user-modal').modal('hide').remove();
+    handleRemovePhotoProfile(rowId, usersTable.row(rowId).data());
+  });
 
   /**
    * Handle overview data
@@ -270,7 +277,14 @@ jQuery(() => {
       </a>
       </div>
       <div class="card-body mt-4">
-        <dl class="row mt-4">
+        <div class="row mt-3">
+          <div class="col-12 d-flex justify-content-center">
+            <a class="btn btn-xs mx-2 btn-dark" id="remove-photo-profile" row-id="${row}">
+              Remove Photo
+            </a>
+          </div>
+        </div>
+        <dl class="row mt-2">
         <dt class="col-12 col-sm-3">Full name</dt>
           <dd class="col-12 col-sm-9">
             ${data.fullName !== null ? data.fullName : '-'}
@@ -400,6 +414,44 @@ jQuery(() => {
         SwalToast('top-end', 2000).fire({
           icon: 'success',
           html: `<b>${data.fullName}</b> restored successfully`,
+        });
+      }
+    });
+  };
+
+  /**
+   * Handle remove photo profile
+   *
+   * @param {number} row
+   * @param {object} data
+   */
+  const handleRemovePhotoProfile = (row, data) => {
+    Swal.fire({
+      title: 'Are you sure?',
+      html: `Remove photo profile <b>${data.fullName}</b>`,
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes, do it!',
+      preConfirm: () => {
+        return $.ajax({
+          url: `{{ apiRoute("/users/profile/") }}${data.id}/photo?remove=true`,
+          type: 'PUT',
+          success: () => true,
+          error: (xhr) => {
+            const error = xhr.responseJSON.message || xhr.statusText;
+            Swal.showValidationMessage(error);
+          },
+        });
+      },
+      allowOutsideClick: () => !Swal.isLoading(),
+    }).then((result) => {
+      if (result.isConfirmed) {
+        usersTable.draw(false);
+        SwalToast('top-end', 2000).fire({
+          icon: 'success',
+          html: `<b>${data.fullName}</b> photo profile removed successfully`,
         });
       }
     });
