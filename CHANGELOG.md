@@ -1,5 +1,44 @@
 # Changelog
 
+## [1.4.0] - 2025-07-15
+
+### Added
+
+- **Auth Pages UX Enhancement**
+  Auto-focus is now applied to the first input field on authentication pages to improve usability.
+
+### Fixed
+
+- **Admin Panel**
+  Fixed the user overview modal which previously caused display or interaction issues.
+
+- **User Module**
+  Fixed the feature to remove user profile photos so it now works as intended when users delete their photo.
+
+### Changed
+
+- No major architecture or business logic changes in this release.
+
+## [1.3.0] - 2025-07-12
+
+### Changed
+
+- **Field Existence Check Optimization**
+  Improved field existence logic in `user` model's `order` query by replacing `Object.keys()` with `fieldsName.indexOf()` for better performance and accuracy.
+
+- **User Attribute Lookup Optimization**
+  Refactored code in `user.js` to eliminate redundant `getAttributes()` calls, improving execution efficiency.
+
+### Dependency Updates
+
+- Bumped multiple development dependencies to enhance stability and security:
+
+  - `jest` from 30.0.3 to 30.0.4
+  - `@types/multer` from 1.4.12 to 2.0.0
+  - `eslint` from 9.28.0 to 9.30.1
+  - `@types/morgan` from 1.9.9 to 1.9.10
+  - `@faker-js/faker` from 9.8.0 to 9.9.0
+
 ## [1.2.0] - 2025-07-02
 
 ### Changed
