@@ -1,5 +1,6 @@
 const commonUtils = require('./common');
 const debugUtils = require('./debug');
+const fileUtils = require('./file');
 const jwtUtils = require('./jwt');
 const loggerUtils = require('./logger');
 const numberUtils = require('./number');
@@ -26,6 +27,7 @@ const getRouteName = (req) => {
 module.exports = {
   ...commonUtils,
   ...debugUtils,
+  ...fileUtils,
   ...jwtUtils,
   ...loggerUtils,
   ...numberUtils,
