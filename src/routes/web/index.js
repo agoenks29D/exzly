@@ -13,16 +13,11 @@ const app = express.Router();
  * Web middleware
  */
 app.use(authMiddleware.getAuthorization, (req, res, next) => {
-  const skiplist = `${process.env.API_ROUTE}/auth/(sign-(up|in)|(forgot|reset)-password|verification)`;
   const whitelist = /(sign-(up|in)|(forgot|reset)-password|verification)/;
   const regexPath = whitelist.test(req.path);
 
   if (req.user && regexPath) {
-    const skip = new RegExp(skiplist);
-
-    if (!skip.exec(req.path)) {
-      return res.redirect(createRoute('web'));
-    }
+    return res.redirect(createRoute('web'));
   }
 
   return next();
