@@ -1,5 +1,35 @@
 # Changelog
 
+## [1.5.0] - 2025-08-12
+
+### Added
+
+- **File Utilities**
+
+  - Added `getFileTypeFromBuffer` and `getFileTypeFromFile` helpers using the `file-type` package to detect file MIME type and extension from buffer or file path.
+
+- **Number Utilities**
+
+  - Added `byteFormat` helper to format numbers into short form with unit suffixes (`K`, `M`, `B`, `T`).
+
+### Changed
+
+- **Web Route Middleware**
+
+  - Simplified auth route redirect logic by removing redundant skiplist regex and directly redirecting authenticated users away from authentication pages.
+
+- **Utils Index**
+
+  - Integrated new `fileUtils` into the main `utils` export.
+
+### Dependency Updates
+
+- `morgan` **1.10.0 → 1.10.1**
+- `sharp` **0.34.2 → 0.34.3**
+- `@types/lodash` **4.17.17 → 4.17.20**
+- `jest` **30.0.4 → 30.0.5**
+- `supertest` **7.1.1 → 7.1.4**
+
 ## [1.4.0] - 2025-07-15
 
 ### Added

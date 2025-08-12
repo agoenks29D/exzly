@@ -239,9 +239,12 @@ jQuery(() => {
         success: function (result) {
           cropImage.cropper('destroy');
           cropImage.attr('src', result.photoProfile);
-          $('.display-user-photoProfile').attr('src', `${result.photoProfile}?height=100&width=100`);
-          $('input[name="user-photo"]').val('');
 
+          if ('{{ user.id }}' === '{{ req.user.id }}') {
+            $('.display-user-photoProfile').attr('src', `${result.photoProfile}?height=100&width=100`);
+          }
+
+          $('input[name="user-photo"]').val('');
           SwalToast('top-end', 2000).fire({
             icon: 'success',
             text: 'Photo profile changed successfuly',
