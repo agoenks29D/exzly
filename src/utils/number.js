@@ -1,4 +1,23 @@
 /**
+ * Byte format
+ *
+ * @param {number} number
+ * @returns {string}
+ */
+const byteFormat = (number) => {
+  const suffixes = ['', 'K', 'M', 'B', 'T'];
+  const suffixNum = Math.floor(`${number}`.length / 3);
+
+  let shortNum = parseFloat((suffixNum !== 0 ? number / 1000 ** suffixNum : number).toPrecision(2));
+
+  if (shortNum % 1 !== 0) {
+    shortNum = shortNum.toFixed(1);
+  }
+
+  return shortNum + suffixes[suffixNum];
+};
+
+/**
  * Random number
  *
  * @param {number} min
@@ -25,4 +44,4 @@ const randomInt = (min = 1, max = 10, length = false) => {
   return code;
 };
 
-module.exports = { randomInt };
+module.exports = { byteFormat, randomInt };
