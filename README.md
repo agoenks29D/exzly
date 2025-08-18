@@ -31,7 +31,6 @@ Whether you're creating a business platform, a complex service, or a company-gra
 - [🔧 Tech Stack](#-tech-stack)
 - [📂 Project Structure](#-project-structure)
 - [🏁 Getting Started](#-getting-started)
-  - [Environment Setup](#environment-setup)
   - [Security Settings](#security-settings)
 - [🌱 Migration and Seeder](#-migration-and-seeder)
 - [🧹 Linter and Formatter](#-linter-and-formatter)
@@ -156,7 +155,7 @@ To get started with Exzly, follow the steps below:
    cp .env.example .env
    ```
 
-   For a detailed explanation of environment variables, refer to [Environment Setup](#environment-setup).
+   For a detailed explanation of environment variables, refer to [Environment Setup](https://github.com/agoenks29D/exzly/wiki#️-project-environment).
 
 3. Run the following command to install the required packages:
 
@@ -169,50 +168,6 @@ To get started with Exzly, follow the steps below:
 5. Before starting the application, you need to set up the database. You can choose between demo data (for development) or production-ready setup. See more options in the [Migration and Seeder](#-migration-and-seeder) section.
 
 6. Now, you're ready to run the app! refer to the 👉 [Running the Project](#-running-the-project) section.
-
-### Environment Setup
-
-Below is the list of environment variables that need to be configured in the `.env` file:
-
-| **Variable**         | **Description**                                                                                            | **Example Value**                 | **Actions secrets and variables** |
-| -------------------- | ---------------------------------------------------------------------------------------------------------- | --------------------------------- | --------------------------------- |
-| `TZ`                 | Time zone setting                                                                                          | `UTC`                             | `variable`                        |
-| `PORT`               | Port number for the application to listen on                                                               | `3000`                            | `secret`                          |
-| `DEBUG`              | Environment variable for debugging and logging                                                             | `express.*`                       | `variable`                        |
-| `APP_NAME`           | Name of the application                                                                                    | `Exzly`                           | `variable`                        |
-| `NODE_ENV`           | The environment the app is running in (e.g., development, production)                                      | `development`                     | `variable`                        |
-| `TRUST_PROXY`        | Trust proxy setting (1 enables trust)                                                                      | `1`                               | `secret`                          |
-| `STORAGE_PATH`       | Path to storage folder                                                                                     | `storage`                         | `secret`                          |
-| `SESSION_SECRET`     | Secret key used for session management                                                                     | `Exzly`                           | `secret`                          |
-| `SESSION_EXPIRATION` | Session expiration time                                                                                    | `4h`                              | `secret`                          |
-| `ASSETS_URL`         | Base URL for serving static assets (useful when using CDN to avoid hardcoding paths)                       | `/`                               | `variable`                        |
-| **HTTPS**            |                                                                                                            |                                   |                                   |
-| `ENABLE_HTTPS`       | Enable or disable HTTPS                                                                                    | `true`                            | `variable`                        |
-| `SSL_KEY_FILE`       | Path to the SSL key file for HTTPS                                                                         | `PATH/TO/SSL_KEY_FILE.key`        | `secret`                          |
-| `SSL_CERT_FILE`      | Path to the SSL certificate file                                                                           | `PATH/TO/SSL_CERT_FILE.crt`       | `secret`                          |
-| **Database**         |                                                                                                            |                                   |                                   |
-| `DB_SYNC`            | Enable or disable database sync                                                                            | `true`                            | `variable`                        |
-| `DB_MODE`            | Mode for database synchronization: alter (non-destructive changes), force (drops and recreates all tables) | `alter`                           | `variable`                        |
-| `DATABASE_NAME`      | Name of the database                                                                                       | `exzly_development`               | `secret`                          |
-| `DATABASE_USER`      | Username used to connect to the database                                                                   | `root`                            | `secret`                          |
-| `DATABASE_PASS`      | Password for the database user                                                                             | _(leave blank if not needed)_     | `secret`                          |
-| `DATABASE_HOST`      | Host address of the database server                                                                        | `localhost`                       | `secret`                          |
-| `DATABASE_TIME`      | Timezone offset for the database connection                                                                | `+00:00`                          | `secret`                          |
-| `DATABASE_DIALECT`   | Type of SQL dialect used (e.g., mysql, postgres)                                                           | `mysql`                           | `secret`                          |
-| `DATABASE_CONFIG`    | Configuration file for advanced DB settings                                                                | `config.js` or `config.json`      | `secret`                          |
-| **Security: JWT**    |                                                                                                            |                                   |                                   |
-| `JWT_SECRET`         | Secret key for JWT authentication                                                                          | `Exzly`                           | `secret`                          |
-| `JWT_EXPIRATION`     | JWT expiration time                                                                                        | `4h`                              | `secret`                          |
-| **SMTP**             |                                                                                                            |                                   |                                   |
-| `SMTP_PORT`          | SMTP port                                                                                                  | `587`                             | `secret`                          |
-| `SMTP_HOST`          | SMTP server host                                                                                           | `sandbox.smtp.mailtrap.io`        | `secret`                          |
-| `SMTP_FROM`          | From email address used in SMTP                                                                            | `No Reply <no-reply@example.com>` | `secret`                          |
-| `SMTP_USER`          | SMTP username                                                                                              | `db71a9eabfxxxx`                  | `secret`                          |
-| `SMTP_PASS`          | SMTP password                                                                                              | `74606e0fa9xxxx`                  | `secret`                          |
-| **Routes**           |                                                                                                            |                                   |                                   |
-| `WEB_ROUTE`          | Base route for web pages                                                                                   | `/`                               | `secret`                          |
-| `API_ROUTE`          | Base route for API endpoints                                                                               | `/api`                            | `secret`                          |
-| `ADMIN_ROUTE`        | Base route for admin panel                                                                                 | `/admin`                          | `secret`                          |
 
 ### Security Settings
 
