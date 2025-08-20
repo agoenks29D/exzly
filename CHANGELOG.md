@@ -1,5 +1,22 @@
 # Changelog
 
+## [1.6.0] - 2025-08-21
+
+### Added
+
+- **Testing Utilities**
+  - Added unit tests for the `byteFormat` function to ensure correct formatting of numeric values with unit suffixes.
+
+### Fixed
+
+- **Admin Panel**
+  - Fixed profile photo update functionality so that it now correctly applies only to the currently logged-in user.
+
+### Changed
+
+- **Documentation**
+  - Environment configuration details were moved from the project source to the GitHub Wiki for better maintainability and centralized documentation.
+
 ## [1.5.0] - 2025-08-12
 
 ### Added
