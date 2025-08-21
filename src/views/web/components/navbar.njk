@@ -43,18 +43,18 @@
       <li class="nav-item dropdown">
         <a class="nav-link" data-toggle="dropdown" href="#" style="cursor: default;">
           {% if req.user.photoProfile %}
-            <img src="{{ req.user.photoProfile }}?height=100&width=100" alt="User Profile Picture" class="img-circle elevation-2" style="width: 30px; height: 30px; object-fit: cover;">
+            <img src="{{ req.user.photoProfile }}?height=100&width=100" alt="User Profile Picture" class="img-circle elevation-2 display-user-photoProfile" style="width: 30px; height: 30px; object-fit: cover;">
           {% else %}
-            <img src="{{ assetsUrl('/public/assets/adminLTE-3.2.0/img/user-placeholder-128x128.png') }}" alt="User Profile Picture" class="img-circle elevation-2" style="width: 30px; height: 30px; object-fit: cover;">
+            <img src="{{ assetsUrl('/public/assets/adminLTE-3.2.0/img/user-placeholder-128x128.png') }}" alt="User Profile Picture" class="img-circle elevation-2 display-user-photoProfile" style="width: 30px; height: 30px; object-fit: cover;">
           {% endif %}
           <span class="ml-2 d-none d-md-inline">{{ req.user.fullName }}</span>
         </a>
         <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right" style="border: 1px solid cadetblue; border-radius: 10px;">
           <div class="dropdown-item d-flex flex-column align-items-center py-3 no-hover" style="border-radius: 10px; cursor: default;">
             {% if req.user.photoProfile %}
-              <img src="{{ req.user.photoProfile }}?height=100&width=100" alt="User Profile Picture" class="img-circle elevation-2" style="width: 60px; height: 60px; object-fit: cover;">
+              <img src="{{ req.user.photoProfile }}?height=100&width=100" alt="User Profile Picture" class="img-circle elevation-2 display-user-photoProfile" style="width: 60px; height: 60px; object-fit: cover;">
               {% else %}
-              <img src="{{ assetsUrl('/public/assets/adminLTE-3.2.0/img/user-placeholder-128x128.png') }}" alt="User Profile Picture" class="img-circle elevation-2" style="width: 60px; height: 60px; object-fit: cover;">
+              <img src="{{ assetsUrl('/public/assets/adminLTE-3.2.0/img/user-placeholder-128x128.png') }}" alt="User Profile Picture" class="img-circle elevation-2 display-user-photoProfile" style="width: 60px; height: 60px; object-fit: cover;">
             {% endif %}
             <p class="mt-2 mb-0 text-center font-weight-bold">{{ req.user.fullName }}</p>
           </div>
