@@ -45,7 +45,6 @@ helmetMiddleware.unless = unless;
  */
 app.set('trust proxy', process.env.TRUST_PROXY);
 app.set('view engine', 'njk');
-app.use(sessionMiddleware, viewEngineMiddleware(app));
 
 /**
  * Global middleware
@@ -59,8 +58,6 @@ app.use(
 app.use(compression());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use('/public', express.static('public'));
-app.use(helmetMiddleware.unless({ path: ['/public'] }));
 app.use('/storage/user-photos/:file', fileLoaderMiddleware.imageLoader.diskStorage('user-photos'));
 
 if (process.env.NODE_ENV !== 'production') {
@@ -79,8 +76,11 @@ if (process.env.NODE_ENV !== 'production') {
 }
 
 /**
- * Set routes
+ * Set routes and global middleware
  */
+app.use(sessionMiddleware, viewEngineMiddleware(app));
+app.use('/public', express.static('public'));
+app.use(helmetMiddleware.unless({ path: ['/public'] }));
 app.use(process.env.API_ROUTE, apiRoutes);
 app.use(process.env.ADMIN_ROUTE, adminRoutes);
 app.use(process.env.WEB_ROUTE, webRoutes);
