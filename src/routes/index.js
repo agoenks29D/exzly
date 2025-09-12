@@ -30,6 +30,7 @@ const helmetMiddleware = helmet({
         'https://picsum.photos',
         'https://loremflickr.com',
         'https://fastly.picsum.photos',
+        'https://cdn.jsdelivr.net',
       ],
       scriptSrc: ["'self'", (req, res) => `'nonce-${res.locals.nonce}'`],
       scriptSrcAttr: [(req, res) => `'nonce-${res.locals.nonce}'`],
