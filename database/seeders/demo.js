@@ -95,7 +95,7 @@ module.exports = {
         const email = faker.internet.email({ firstName, lastName }).toLowerCase();
         const username = generateUsername(firstName, lastName);
         const password = SHA1('member').toString();
-        const photo_profile = faker.image.url({ height: 200, width: 200 });
+        const photo_profile = faker.image.personPortrait({ sex: sexType, size: '512' });
 
         lastDate = lastDate.clone().add(8.8, 'hours');
 
