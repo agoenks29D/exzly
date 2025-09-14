@@ -182,22 +182,6 @@ describe('RESTful-API: Authentication', () => {
     });
   });
 
-  describe('Forgot password', () => {
-    it('test 1: should return 404 when identity is unknown', async () => {
-      await request(app)
-        .post(createRoute('api', '/auth/forgot-password'))
-        .send({ identity: 'unknown' })
-        .expect(404);
-    });
-
-    it('test 2: should return 200 when identity is valid', async () => {
-      await request(app)
-        .post(createRoute('api', '/auth/forgot-password'))
-        .send({ identity: 'admin' })
-        .expect(200);
-    });
-  });
-
   describe('Verification code', () => {
     it('should return 400 when the verification code is invalid', async () => {
       await request(app)
@@ -310,6 +294,13 @@ describe('RESTful-API: Authentication - Account recovery', () => {
         .post(createRoute('api', '/auth/reset-password'))
         .send({ token: resetPasswordToken, newPassword: 'member', confirmPassword: 'member' })
         .expect(400);
+    });
+
+    it('test 4: should return 404 when forgot-password identity is unknown', async () => {
+      await request(app)
+        .post(createRoute('api', '/auth/forgot-password'))
+        .send({ identity: 'unknown' })
+        .expect(404);
     });
   });
 });
