@@ -93,6 +93,16 @@ module.exports = (err, req, res, next) => {
      * Error instance
      */
     if (err instanceof Error) {
+      /**
+       * SMTP error: Invalid login: 535 5.7.0 Invalid credentials
+       */
+      if (err.message.match(/(\d{3})\s(\d+\.\d+\.\d+)\s([a-zA-Z\s]+)$/)) {
+        errorFormat.message = 'SMTP server error, please report to administrator';
+
+        // send response
+        return res.status(errorFormat.statusCode).json(errorFormat);
+      }
+
       // send response
       return res.status(errorFormat.statusCode).json(errorFormat);
     }

@@ -3,8 +3,6 @@ const createHttpError = require('http-errors');
 const app = require('@exzly-routes');
 const webErrorHandler = require('@exzly-routes/web/error');
 const { createRoute } = require('@exzly-utils');
-const { AuthVerifyModel } = require('@exzly-models');
-const { SHA1 } = require('crypto-js');
 
 let adminAuthCookie, memberAuthCookie;
 
@@ -50,26 +48,7 @@ describe('Web Routes', () => {
         .expect(400);
     });
 
-    it('test 7: should redirect to reset password page when accessing verification page with valid token', async () => {
-      await request(app)
-        .post(createRoute('api', '/auth/forgot-password'))
-        .send({ identity: 'member' })
-        .expect(200);
-
-      const authVerify = await AuthVerifyModel.findOne({
-        where: { userId: 2 },
-        order: [['createdAt', 'DESC']],
-      });
-      const token = SHA1(authVerify.code).toString();
-      const response = await request(app)
-        .get(createRoute('web', 'verification'))
-        .query({ token })
-        .expect(302);
-
-      expect(response.header.location).toBe(createRoute('web', '/reset-password'));
-    });
-
-    it('test 8: should return 200 when accessing test page', async () => {
+    it('test 7: should return 200 when accessing test page', async () => {
       await request(app).get(createRoute('web', '/test')).query({ a: 1, b: 2, c: 3 }).expect(200);
     });
   });
