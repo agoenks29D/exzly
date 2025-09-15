@@ -1,5 +1,22 @@
 # Changelog
 
+## [1.6.1] - 2025-09-15
+
+### Fixed
+
+- Web
+
+  - Removed the password reset redirection test which was causing issues in the test flow.
+  - Fixed the status check in tests to be more accurate and aligned with the desired flow.
+
+- Authentication
+  - Restructured the forgot-password tests and integrated them into the account recovery test suite.
+
+### Changed
+
+- Documentation
+  - Made minor adjustments to test documentation to reflect the updated test flow.
+
 ## [1.6.0] - 2025-08-21
 
 ### Added
