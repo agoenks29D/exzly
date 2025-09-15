@@ -1,4 +1,5 @@
-ignore:
-  - 'dependabot/**'
-  - 'feature/**'
-  - 'debug/**'
+coverage:
+  status:
+    project:
+      default:
+        target: 80%
