@@ -85,14 +85,15 @@ jQuery(() => {
     const password = $('input#password').val();
 
     $.ajax({
-      url: '{{ apiRoute("/auth/sign-in") }}',
+      url: createRoute('api', '/auth/sign-in'),
       method: 'POST',
       data: { identity, password },
       success: (response) => {
         setFormDisabled(false);
+        userSession.set(response.user);
         localStorage.setItem('access-token', response.accessToken);
         localStorage.setItem('refresh-token', response.refreshToken);
-        window.location.replace('{{ webRoute() }}');
+        window.location.replace(createRoute('web'));
       },
       error: (error) => {
         setFormDisabled(false);

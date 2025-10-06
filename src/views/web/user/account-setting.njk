@@ -197,9 +197,9 @@ jQuery(() => {
   $('#cancel-profile-photo').on('click', function (e) {
     e.preventDefault();
     cropImage.cropper('destroy');
-    cropImage.attr('src', '{{ user.photoProfile }}');
+    cropImage.attr('src', userSession.photoProfile);
     $('input[name="user-photo"]').val('');
-  })
+  });
 
   /**
    * Update account photo
@@ -231,7 +231,7 @@ jQuery(() => {
       formData.append('photo', blob, 'profile.png');
 
       $.ajax({
-        url: '{{ apiRoute("/users/profile/" ~ user.id ~ "/photo") }}',
+        url: createRoute('api', `/users/profile/${userSession.id}/photo`),
         method: 'PUT',
         data: formData,
         processData: false,
@@ -239,8 +239,10 @@ jQuery(() => {
         success: function (result) {
           cropImage.cropper('destroy');
           cropImage.attr('src', result.photoProfile);
-          $('.display-user-photoProfile').attr('src', `${result.photoProfile}?height=100&width=100`);
+          $('.display-user-photoProfile').attr('src', `${result.photoProfile}?height=100&width=100`,);
           $('input[name="user-photo"]').val('');
+
+          userSession.set({ photoProfile: result.photoProfile });
 
           SwalToast('top-end', 2000).fire({
             icon: 'success',
@@ -253,7 +255,7 @@ jQuery(() => {
             icon: 'error',
             text: error.responseJSON?.message || 'Please try again later',
           });
-        }
+        },
       });
     });
   });
@@ -273,7 +275,7 @@ jQuery(() => {
 
     $.ajax({
       method: 'PUT',
-      url: '{{ apiRoute("/users/profile/" ~ user.id) }}',
+      url: createRoute('api', `/users/profile/${userSession.id}`),
       data: { gender, fullName },
       success: () => {
         SwalToast('top-end', 2000).fire({
@@ -282,6 +284,7 @@ jQuery(() => {
         });
 
         $('.display-user-fullName').text(fullName);
+        userSession.set({ fullName, gender })
         setFormDisabled(false, '#account-information');
       },
       error: (error) => {
@@ -302,14 +305,14 @@ jQuery(() => {
           title: 'Failed to update account information',
           text: error.responseJSON?.message || 'Please try again later',
         });
-      }
+      },
     });
   });
 
   /**
    * Update account credentials
    */
-   $('form#account-credentials').on('submit', function (e) {
+  $('form#account-credentials').on('submit', function (e) {
     e.preventDefault();
 
     setFormDisabled(true, '#account-credentials');
@@ -323,7 +326,7 @@ jQuery(() => {
 
     $.ajax({
       method: 'PUT',
-      url: '{{ apiRoute("/users/credentials/" ~ user.id) }}',
+      url: createRoute('api', `"/users/credentials/${userSession.id}`),
       data: { email, username, newPassword, confirmPassword },
       success: () => {
         $('#user-newPassword').val('');
@@ -347,7 +350,7 @@ jQuery(() => {
             return true;
           });
         }
-      }
+      },
     });
   });
 

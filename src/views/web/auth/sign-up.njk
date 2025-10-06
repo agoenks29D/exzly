@@ -103,12 +103,12 @@ jQuery(() => {
     const fullName = $('input#fullName').val();
 
     $.ajax({
-      url: '{{ apiRoute("/auth/sign-up") }}',
+      url: createRoute('api', '/auth/sign-up'),
       method: 'POST',
       data: { email, username, password, fullName },
       success: (response) => {
         setFormDisabled(false);
-        window.location.replace('{{ webRoute() }}');
+        window.location.replace(createRoute('web'));
       },
       error: (error) => {
         setFormDisabled(false);

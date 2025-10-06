@@ -52,6 +52,7 @@ module.exports = (express) => {
      */
     viewEngine.addGlobal('req', req);
     viewEngine.addGlobal('nonce', res.locals.nonce);
+    viewEngine.addGlobal('app_env', process.env);
     viewEngine.addGlobal('app_name', process.env.APP_NAME);
     viewEngine.addGlobal('appRoute', {
       api: process.env.API_ROUTE,

@@ -96,7 +96,9 @@ app.post(
       email: auth.email,
       username: auth.username,
       isAdmin: auth.isAdmin,
+      gender: auth.gender,
       fullName: auth.fullName,
+      photoProfile: auth.photoProfile,
     };
     const accessToken = jwtHelper.createUserToken('access-token', auth.id);
     const refreshToken = jwtHelper.createUserToken('refresh-token', auth.id);
