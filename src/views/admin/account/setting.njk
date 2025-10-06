@@ -49,13 +49,9 @@
               <div class="card">
                 <div class="card-body justify-content-center" id="crop-preview">
                   {% if user.photoProfile %}
-                    <center>
-                      <img src="{{ user.photoProfile }}" alt="User image" id="crop-image" class="center">
-                    </center>
+                    <img src="{{ user.photoProfile }}" alt="User image" id="crop-image" class="center">
                     {% else %}
-                    <center>
-                      <img src="{{ assetsUrl('/public/assets/adminLTE-3.2.0/img/user-placeholder-128x128.png') }}" alt="User image" id="crop-image" class="center">
-                    </center>
+                    <img src="{{ assetsUrl('/public/assets/adminLTE-3.2.0/img/user-placeholder-128x128.png') }}" alt="User image" id="crop-image" class="center">
                   {% endif %}
                 </div>
               </div>

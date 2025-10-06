@@ -23,3 +23,6 @@ updates:
 
       - dependency-name: '@faker-js/faker'
         versions: ['>=10.0.0']
+
+      - dependency-name: 'uuid'
+        versions: ['>=11.0.0']
