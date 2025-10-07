@@ -70,6 +70,12 @@ app.post(
 app.get(
   '/profile/:userId?',
   asyncRoute(async (req, res, next) => {
+    if (!(req.params.userId || req.userId)) {
+      return next(
+        httpErrors.BadRequest('User ID is required in either the URL or the authenticated session'),
+      );
+    }
+
     const user = await UserModel.findByPk(req.params.userId || req.userId);
 
     if (!user) {
@@ -98,7 +104,7 @@ app.put(
   authMiddleware.rejectUnauthorized,
   [userValidator.updateProfile],
   asyncRoute(async (req, res, next) => {
-    const user = await UserModel.findByPk(req.params.userId || req.user.id);
+    const user = await UserModel.findByPk(req.params.userId || req.userId);
     const { fullName, gender } = matchedData(req, { locations: ['body'] });
 
     if (!user) {
@@ -140,9 +146,18 @@ app.delete(
       return next(httpErrors.BadRequest('Unable to delete'));
     }
 
-    if (user.id !== req.userId && !req.user.isAdmin) {
-      // send error : forbidden
-      return next(httpErrors.Forbidden("Oops! You don't have permission to do that"));
+    if (user.id !== req.userId) {
+      if (!req.user.isAdmin) {
+        // send error : forbidden
+        return next(httpErrors.Forbidden("You don't have permission to do that"));
+      }
+
+      if (new Date(req.user.createdAt) > new Date(user.createdAt)) {
+        // send error : forbidden
+        return next(
+          httpErrors.Forbidden('Cannot delete a user with an earlier account creation date'),
+        );
+      }
     }
 
     await user.destroy({ force: req.query['in-trash'] });
@@ -214,6 +229,62 @@ app.put(
       // send response
       return res.json({ photoProfile: req.file.path });
     }
+
+    // send response
+    return res.json({ success: true });
+  }),
+);
+
+/**
+ * Promote user as admin
+ */
+app.get(
+  '/promote/:userId',
+  authMiddleware.rejectUnauthorized,
+  authMiddleware.rejectNonAdmin,
+  asyncRoute(async (req, res, next) => {
+    const user = await UserModel.findByPk(req.params.userId);
+
+    if (!user) {
+      return next(httpErrors.NotFound('User not found'));
+    }
+
+    if (user.isAdmin) {
+      return next(httpErrors.BadRequest('User is already an admin'));
+    }
+
+    await user.update({ isAdmin: true });
+
+    // send response
+    return res.json({ success: true });
+  }),
+);
+
+/**
+ * Demote user from admin
+ */
+app.get(
+  '/demote/:userId',
+  authMiddleware.rejectUnauthorized,
+  authMiddleware.rejectNonAdmin,
+  asyncRoute(async (req, res, next) => {
+    const user = await UserModel.findByPk(req.params.userId);
+
+    if (!user) {
+      return next(httpErrors.NotFound('User not found'));
+    }
+
+    if (!user.isAdmin) {
+      return next(httpErrors.BadRequest('User is not an admin'));
+    }
+
+    if (new Date(req.user.createdAt) > new Date(user.createdAt)) {
+      return next(
+        httpErrors.Forbidden('Cannot demote a user with an earlier account creation date'),
+      );
+    }
+
+    await user.update({ isAdmin: false });
 
     // send response
     return res.json({ success: true });

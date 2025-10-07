@@ -49,13 +49,9 @@
               <div class="card">
                 <div class="card-body justify-content-center" id="crop-preview">
                   {% if user.photoProfile %}
-                    <center>
-                      <img src="{{ user.photoProfile }}" alt="User image" id="crop-image" class="center">
-                    </center>
+                    <img src="{{ user.photoProfile }}" alt="User image" id="crop-image" class="center">
                     {% else %}
-                    <center>
-                      <img src="{{ assetsUrl('/public/assets/adminLTE-3.2.0/img/user-placeholder-128x128.png') }}" alt="User image" id="crop-image" class="center">
-                    </center>
+                    <img src="{{ assetsUrl('/public/assets/adminLTE-3.2.0/img/user-placeholder-128x128.png') }}" alt="User image" id="crop-image" class="center">
                   {% endif %}
                 </div>
               </div>
@@ -172,6 +168,7 @@
 <script src="{{ assetsUrl('/public/assets/jquery-cropper-1.0.2/jquery-cropper.min.js') }}"></script>
 <script type="text/javascript" nonce="{{ nonce }}">
 jQuery(() => {
+  const userId = parseInt(getUriSegment(3));
   const cropImage = $('#crop-image');
 
   $('input[name="user-photo"]').on('change', function (event) {
@@ -199,7 +196,7 @@ jQuery(() => {
     cropImage.cropper('destroy');
     cropImage.attr('src', '{{ user.photoProfile }}');
     $('input[name="user-photo"]').val('');
-  })
+  });
 
   /**
    * Update account photo
@@ -231,7 +228,7 @@ jQuery(() => {
       formData.append('photo', blob, 'profile.png');
 
       $.ajax({
-        url: '{{ apiRoute("/users/profile/" ~ user.id ~ "/photo") }}',
+        url: createRoute('api', `/users/profile/${userId}/photo`),
         method: 'PUT',
         data: formData,
         processData: false,
@@ -240,8 +237,9 @@ jQuery(() => {
           cropImage.cropper('destroy');
           cropImage.attr('src', result.photoProfile);
 
-          if ('{{ user.id }}' === '{{ req.user.id }}') {
-            $('.display-user-photoProfile').attr('src', `${result.photoProfile}?height=100&width=100`);
+          if (userSession.id === userId) {
+            $('.display-user-photoProfile').attr('src', `${result.photoProfile}?height=100&width=100`,);
+            userSession.set({ photoProfile: result.photoProfile });
           }
 
           $('input[name="user-photo"]').val('');
@@ -256,7 +254,7 @@ jQuery(() => {
             icon: 'error',
             text: error.responseJSON?.message || 'Please try again later',
           });
-        }
+        },
       });
     });
   });
@@ -276,7 +274,7 @@ jQuery(() => {
 
     $.ajax({
       method: 'PUT',
-      url: '{{ apiRoute("/users/profile/" ~ user.id) }}',
+      url: createRoute('api', `/users/profile/${userId}`),
       data: { gender, fullName },
       success: () => {
         SwalToast('top-end', 2000).fire({
@@ -284,7 +282,6 @@ jQuery(() => {
           text: 'Account information updated',
         });
 
-        $('.display-user-fullName').text(fullName);
         setFormDisabled(false, '#account-information');
       },
       error: (error) => {
@@ -305,14 +302,14 @@ jQuery(() => {
           title: 'Failed to update account information',
           text: error.responseJSON?.message || 'Please try again later',
         });
-      }
+      },
     });
   });
 
   /**
    * Update account credentials
    */
-   $('form#account-credentials').on('submit', function (e) {
+  $('form#account-credentials').on('submit', function (e) {
     e.preventDefault();
 
     setFormDisabled(true, '#account-credentials');
@@ -326,7 +323,7 @@ jQuery(() => {
 
     $.ajax({
       method: 'PUT',
-      url: '{{ apiRoute("/users/credentials/" ~ user.id) }}',
+      url: createRoute('api', `/users/credentials/${userId}`),
       data: { email, username, newPassword, confirmPassword },
       success: () => {
         $('#user-newPassword').val('');
@@ -350,7 +347,7 @@ jQuery(() => {
             return true;
           });
         }
-      }
+      },
     });
   });
 

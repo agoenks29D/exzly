@@ -39,40 +39,190 @@
 {% endblock content %}
 
 {% block page_script %}
+<script src="{{ assetsUrl('/public/assets/moment/moment.min.js') }}"></script>
+<script src="{{ assetsUrl('/public/assets/moment/moment-timezone-with-data.min.js') }}"></script>
 <script type="text/javascript" nonce="{{ nonce }}">
 jQuery(() => {
-  $.ajax({
-    url: '{{ apiRoute("/users") }}',
-    data: {
-      size: 8,
-      columns: [
-        {
-          name: 'id',
-        },
-      ],
-      order: [
-        {
-          dir: 'desc',
-          name: 'id',
-        },
-      ],
-    },
-    success: ({ data }) => {
-      $('ul.users-list').append(
-        data.map((user) => {
-          const photoProfile =
-            user.photoProfile === null
-              ? "{{ assetsUrl('/public/assets/adminLTE-3.2.0/img/user-placeholder-128x128.png') }}"
-              : user.photoProfile;
-          return `
-            <li>
-              <img src="${photoProfile}" style="height:60px;width:60px;" alt="User profile image"><a class="users-list-name" href="#" user-id="${user.id}">${user.fullName}</a>
-              <span class="users-list-date">${moment(user.createdAt).fromNow()}</span>
-            </li>
-          `;
-        }),
-      );
-    },
+  const loadRecentUsers = () => {
+    $.ajax({
+      url: createRoute('api', '/users'),
+      data: {
+        size: 8,
+        columns: [
+          {
+            name: 'id',
+          },
+        ],
+        order: [
+          {
+            dir: 'desc',
+            name: 'id',
+          },
+        ],
+      },
+      success: ({ data }) => {
+        $('ul.users-list').empty();
+        $('ul.users-list').append(
+          data.map((user) => {
+            const photoProfile =
+              user.photoProfile === null
+                ? assetsUrl('/public/assets/adminLTE-3.2.0/img/user-placeholder-128x128.png')
+                : user.photoProfile;
+            return `
+              <li class="users-list-item" style="cursor: pointer" user-id="${user.id}">
+                <img src="${photoProfile}" style="height:60px;width:60px;" alt="User profile image"><a class="users-list-name">${user.fullName}</a>
+                <span class="users-list-date">${moment(user.createdAt).fromNow()}</span>
+              </li>`;
+          }),
+        );
+      },
+    });
+  };
+
+  /**
+   * Handle overview data
+   *
+   * @param {object} data
+   */
+  const handleOverviewData = (data) => {
+    const hasPhotoProfile = data.photoProfile !== null;
+    const photoProfile = hasPhotoProfile
+      ? `${data.photoProfile}`
+      : assetsUrl('/public/assets/adminLTE-3.2.0/img/user1-128x128.jpg');
+    const backgroundImage = assetsUrl('/public/assets/adminLTE-3.2.0/img/photo1.png');
+    const html = `
+      <div class="card card-widget widget-user widget-user-modal elevation-3" style="border-radius: 1rem;">
+        <div class="widget-user-header widget-user-modal-header bg-info">
+          <div class="row pt-2">
+            <div class="col-12">
+              <img src="${assetsUrl('/public/assets/images/x-button.png')}" class="float-right close"  data-dismiss="modal" aria-label="Close" />
+            </div>
+            <div class="col-12">
+              <h3 class="widget-user-username text-center">${data.fullName}</h3>
+            </div>
+          </div>
+        </div>
+        <div class="widget-user-image">
+        <a href="${photoProfile}" data-fancybox data-caption="${data.fullName}">
+          <img class="img-circle rounded-circle elevation-2 mt-3" src="${photoProfile}?height=100&width=100" alt="User Avatar" style="height:100px;width:100px;">
+        </a>
+        </div>
+        <div class="card-body mt-4">
+          <div class="row ${!hasPhotoProfile ? 'd-none mt-4' : 'mt-3'}">
+            <div class="col-12 d-flex justify-content-center">
+              <a class="btn btn-xs mx-2 btn-dark" id="remove-photo-profile" user-id="${data.id}">Remove Photo</a>
+            </div>
+          </div>
+          <dl class="row mt-2">
+            <dt class="col-12 col-sm-3">Full name</dt>
+            <dd class="col-12 col-sm-9">
+              ${data.fullName !== null ? data.fullName : '-'}
+            </dd>
+            <dt class="col-12 col-sm-3">Email</dt>
+            <dd class="col-12 col-sm-9">
+              ${data.email !== null ? data.email : '-'}
+            </dd>
+            <dt class="col-12 col-sm-3">Username</dt>
+            <dd class="col-12 col-sm-9">
+              ${data.username !== null ? data.username : '-'}
+            </dd>
+            <dt class="col-12 col-sm-3">Gender</dt>
+            <dd class="col-12 col-sm-9">
+              ${data.gender !== null ? ucfirst(data.gender) : '-'}
+            </dd>
+            <dt class="col-12 col-sm-3">Joined</dt>
+            <dd class="col-12 col-sm-9">
+              ${moment.tz(data.createdAt, getTimezone()).tz(moment.tz.guess()).format('dddd, DD MMMM YYYY, HH:mm')}
+            </dd>
+          </dl>
+          <hr>
+          <div class="row justify-content-center text-center">
+            <div class="col-auto">
+              <a href="${createRoute('admin', `/users/profile/${data.id}`)}" class="btn btn-sm btn-info">View Profile</a>
+            </div>
+            <div class="col-auto">
+              <a href="${createRoute('admin', `/users/profile/${data.id}/edit`)}" class="btn btn-sm btn-secondary">Edit Profile</a>
+            </div>
+          </div>
+        </div>
+      </div>`;
+
+    const modal = `
+      <div class="modal fade col-12">
+        <div class="modal-dialog">
+          <div class="modal-content elevation-0" style="background-color: transparent; border: 0;">
+            <div class="modal-body">
+              ${html}
+            </div>
+          </div>
+        </div>
+      </div>`;
+    $(modal).appendTo('body').modal('show');
+  };
+
+  /**
+   * Handle remove photo profile
+   *
+   * @param {object} data
+   */
+  const handleRemovePhotoProfile = (data) => {
+    Swal.fire({
+      title: 'Are you sure?',
+      html: `Remove photo profile <b>${data.fullName}</b>`,
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes, do it!',
+      preConfirm: () => {
+        return $.ajax({
+          url: createRoute('api', `/users/profile/${data.id}/photo?remove=true`),
+          type: 'PUT',
+          success: () => true,
+          error: (xhr) => {
+            const error = xhr.responseJSON.message || xhr.statusText;
+            Swal.fire({
+              icon: 'error',
+              title: 'Oops...',
+              text: error,
+            });
+          },
+        });
+      },
+      allowOutsideClick: () => !Swal.isLoading(),
+    }).then((result) => {
+      if (result.isConfirmed) {
+        SwalToast('top-end', 2000).fire({
+          icon: 'success',
+          html: `<b>${data.fullName}</b> photo profile removed successfully`,
+        });
+
+        loadRecentUsers();
+      }
+    });
+  };
+
+  loadRecentUsers();
+
+  $(document).on('click', '.users-list-item', function (e) {
+    e.preventDefault();
+    const userId = $(this).attr('user-id');
+    $.ajax({
+      url: createRoute('api', `/users/profile/${userId}`),
+      success: handleOverviewData,
+    });
+  });
+
+  $(document).on('click', '#remove-photo-profile', function (e) {
+    e.preventDefault();
+    const userId = $(this).attr('user-id');
+    $('.modal-backdrop').remove();
+    $('.widget-user-modal').modal('hide').remove();
+
+    $.ajax({
+      url: createRoute('api', `/users/profile/${userId}`),
+      success: handleRemovePhotoProfile,
+    });
   });
 });
 </script>

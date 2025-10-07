@@ -54,13 +54,13 @@ jQuery(() => {
     const code = $('input#code').val();
 
     $.ajax({
-      url: '{{ apiRoute("/auth/verification") }}',
+      url: createRoute('api', '/auth/verification'),
       method: 'POST',
       data: { code },
       success: (response) => {
         setFormDisabled(false);
         if (response.purpose === 'password-reset') {
-          window.location.replace('{{ webRoute("/reset-password") }}');
+          window.location.replace(createRoute('web', '/reset-password'));
           localStorage.setItem('reset-password-token', response.token);
         }
       },

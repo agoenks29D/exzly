@@ -124,7 +124,7 @@ const updateCredentials = [
         return true;
       }
 
-      if (req.user.id === isRegistered.id) {
+      if (req.userId === isRegistered.id) {
         return true;
       }
 
@@ -153,7 +153,7 @@ const updateCredentials = [
         return true;
       }
 
-      if (req.user.id === isRegistered.id) {
+      if (req.userId === isRegistered.id) {
         return true;
       }
 

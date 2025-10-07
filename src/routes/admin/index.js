@@ -115,6 +115,10 @@ app.get(
       return next(httpErrors.NotFound('User not found'));
     }
 
+    if (user.id === req.userId) {
+      return res.redirect(createRoute('admin', '/account/setting'));
+    }
+
     return res.render('admin/users/edit', { user });
   }),
 );
