@@ -1,11 +1,41 @@
 # Changelog
 
+## [1.7.0] - 2025-10-8
+
+### Added
+
+- **User Session Management**
+  - Introduced userSession object for managing client-side session data.
+  - Added utility function getUriSegment for route handling.
+- User Role Management
+  - New API endpoints /promote/:userId and /demote/:userId to promote or demote users as administrators.
+- Authentication Enhancements
+  - Sign-in response now includes additional fields: gender and photoProfile.
+
+### Changed
+
+- Refactored user management APIs for consistent validation and authorization using req.userId.
+- Updated views to use the new userSession and createRoute helper for improved client-side logic.
+- Removed deprecated `<center>` tag from user image components.
+- Updated dependabot configuration to include uuid and @faker-js/faker.
+
+### Dependency Updates
+
+- Bumped major dependencies:
+  - `jest` to` 30.2.0`
+  - `express-rate-limit` to `8.1.0`
+  - `eslint` to `9.37.0`
+  - `nodemailer` and `@types/nodemailer`
+  - `dotenv` to `17.2.3`
+  - `globals` to `16.4.0`
+  - `@eslint/js` to `9.36.0`
+  - `prettier` to `3.6.2`
+
 ## [1.6.1] - 2025-09-15
 
 ### Fixed
 
 - Web
-
   - Removed the password reset redirection test which was causing issues in the test flow.
   - Fixed the status check in tests to be more accurate and aligned with the desired flow.
 
@@ -39,21 +69,17 @@
 ### Added
 
 - **File Utilities**
-
   - Added `getFileTypeFromBuffer` and `getFileTypeFromFile` helpers using the `file-type` package to detect file MIME type and extension from buffer or file path.
 
 - **Number Utilities**
-
   - Added `byteFormat` helper to format numbers into short form with unit suffixes (`K`, `M`, `B`, `T`).
 
 ### Changed
 
 - **Web Route Middleware**
-
   - Simplified auth route redirect logic by removing redundant skiplist regex and directly redirecting authenticated users away from authentication pages.
 
 - **Utils Index**
-
   - Integrated new `fileUtils` into the main `utils` export.
 
 ### Dependency Updates
@@ -96,7 +122,6 @@
 ### Dependency Updates
 
 - Bumped multiple development dependencies to enhance stability and security:
-
   - `jest` from 30.0.3 to 30.0.4
   - `@types/multer` from 1.4.12 to 2.0.0
   - `eslint` from 9.28.0 to 9.30.1
