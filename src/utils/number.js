@@ -44,4 +44,17 @@ const randomInt = (min = 1, max = 10, length = false) => {
   return code;
 };
 
-module.exports = { byteFormat, randomInt };
+/**
+ * Check if value is numeric (integer or numeric string)
+ *
+ * @param {any} value
+ * @returns {boolean}
+ */
+const isNumeric = (value) => {
+  return (
+    (typeof value === 'number' && Number.isInteger(value)) ||
+    (typeof value === 'string' && /^\d+$/.test(value))
+  );
+};
+
+module.exports = { byteFormat, randomInt, isNumeric };
