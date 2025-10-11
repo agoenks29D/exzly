@@ -10,7 +10,7 @@ const session = require('express-session');
 const httpErrors = require('http-errors');
 const FileStore = require('session-file-store')(session);
 const { validationResult } = require('express-validator');
-const { exzlyDebugMiddleware } = require('@exzly-utils');
+const { debugMiddleware } = require('@exzly-utils');
 const authMiddleware = require('./auth');
 const storageMiddleware = require('./storage');
 const fileLoaderMiddleware = require('./file-loader');
@@ -31,7 +31,7 @@ const asyncRoute = (fn) => (req, res, next) => {
  * @type {ExpressMiddleware}
  */
 const runValidation = (req, res, next) => {
-  exzlyDebugMiddleware('run validation request');
+  debugMiddleware('run validation request');
   if (!validationResult(req).isEmpty()) {
     return next(httpErrors.BadRequest('validation'));
   }

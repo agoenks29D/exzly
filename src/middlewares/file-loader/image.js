@@ -8,7 +8,7 @@
 const fs = require('fs');
 const path = require('path');
 const sharp = require('sharp');
-const { exzlyDebugMiddleware } = require('@exzly-utils');
+const { debugMiddleware } = require('@exzly-utils');
 
 /**
  * Load image from disk storage
@@ -36,7 +36,7 @@ const diskStorage = (destination = '/') => {
     const imageResizedName = `${fileName}-${width}x${height}${imageExt}`;
     const imageRezizedFile = path.resolve(path.join(diskStoragePath, imageResizedName));
 
-    exzlyDebugMiddleware('load image from disk storage');
+    debugMiddleware('load image from disk storage');
 
     if (req.query.width && req.query.height) {
       if (fs.existsSync(imageRezizedFile)) {

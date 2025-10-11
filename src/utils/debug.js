@@ -1,8 +1,8 @@
-const debug = require('debug');
-const exzlyDebug = debug('exzly');
-const exzlyDebugMiddleware = debug('exzly:middleware');
+const debug = require('debug')('exzly');
+
+const debugMiddleware = debug.extend('middleware');
 
 module.exports = {
-  exzlyDebug,
-  exzlyDebugMiddleware,
+  debug,
+  debugMiddleware,
 };
