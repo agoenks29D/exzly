@@ -12,6 +12,8 @@ const { UserModel } = require('@exzly-models');
 const dataValidation = {
   fullNameMin: 2,
   fullNameMax: 80,
+  usernameMin: 10,
+  usernameMax: 10,
   usernameRegEx: /^[a-zA-Z0-9](?!.*?[._]{2})[a-zA-Z0-9._]{0,28}[a-zA-Z0-9]$/u,
   passwordMin: 6,
 };
@@ -47,6 +49,10 @@ const createNew = [
     .withMessage(
       'Username format is invalid. Use letters, numbers, "_", or ".", and avoid consecutive symbols like ".." or "__"',
     )
+    .isLength({ min: dataValidation.usernameMin })
+    .withMessage(`Username must be at least ${dataValidation.usernameMin} characters long`)
+    .isLength({ max: dataValidation.usernameMax })
+    .withMessage(`Username must be no more than ${dataValidation.usernameMax} characters long`)
     .custom(async (value) => {
       const isRegistered = await UserModel.findOne({ where: { username: value } });
 
@@ -146,6 +152,10 @@ const updateCredentials = [
     .withMessage(
       'Username format is invalid. Use letters, numbers, "_", or ".", and avoid consecutive symbols like ".." or "__"',
     )
+    .isLength({ min: dataValidation.usernameMin })
+    .withMessage(`Username must be at least ${dataValidation.usernameMin} characters long`)
+    .isLength({ max: dataValidation.usernameMax })
+    .withMessage(`Username must be no more than ${dataValidation.usernameMax} characters long`)
     .custom(async (value, { req }) => {
       const isRegistered = await UserModel.findOne({ where: { username: value } });
 
