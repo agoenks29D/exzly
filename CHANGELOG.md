@@ -1,5 +1,51 @@
 # Changelog
 
+## [1.8.0] - 2025-10-17
+
+### Added
+
+- **User Experience (UX)**
+  - Implemented a **spinning loading indicator** during profile photo upload and removal in Admin views.
+- **API**
+  - Added **`serverTime`** to the root API endpoint response.
+- **Utility**
+  - Added the **`isNumeric`** helper function.
+
+### Fixed
+
+- **Admin/API Logic**
+  - Prevented an **administrator from demoting themselves** via the API.
+- **User Validation**
+  - Added **username length validation** for registration and update.
+
+### Changed
+
+- **Admin User Interface (UI)**
+  - **Improved responsiveness** of user detail modals.
+  - Ensured modals are **removed from the DOM** after being closed.
+- **Admin User Module Logic**
+  - Refactored DataTables event handlers to use **row ID** instead of redundant data objects.
+  - Improved AJAX result checking and user table redraw logic for consistency.
+- **Code Cleanup**
+  - Simplified and **renamed debug utility exports**.
+
+### Test
+
+- **Users API**
+  - Added **comprehensive unit tests** for admin actions (promote/demote) and critical user validations (`users.spec.js`).
+- **Utility**
+  - Added **unit tests** for `getFileTypeFromBuffer` and `getFileTypeFromFile` utility functions.
+
+### Chore & CI/CD
+
+- **Dependency Updates**
+  - Bumped dependencies: `mysql2`, `sharp`, and `@types/sequelize`.
+- **Code Coverage**
+  - Updated **Codecov configuration** to set the overall coverage target at **$80\%$**.
+  - Enabled Codecov upload for CI on `develop/v1` and `develop/v2` branches.
+- **Dependabot**
+  - Changed Dependabot's target branch to `develop/v1`.
+
 ## [1.7.0] - 2025-10-8
 
 ### Added
