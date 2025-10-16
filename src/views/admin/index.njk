@@ -87,7 +87,7 @@ jQuery(() => {
   const handleOverviewData = (data) => {
     const hasPhotoProfile = data.photoProfile !== null;
     const photoProfile = hasPhotoProfile
-      ? `${data.photoProfile}`
+      ? data.photoProfile
       : assetsUrl('/public/assets/adminLTE-3.2.0/img/user1-128x128.jpg');
     const backgroundImage = assetsUrl('/public/assets/adminLTE-3.2.0/img/photo1.png');
     const html = `
@@ -157,7 +157,9 @@ jQuery(() => {
           </div>
         </div>
       </div>`;
-    $(modal).appendTo('body').modal('show');
+    $(modal).appendTo('body').on('hidden.bs.modal', function () {
+      $(this).remove();
+    }).modal('show');
   };
 
   /**

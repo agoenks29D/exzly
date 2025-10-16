@@ -144,7 +144,6 @@ jQuery(() => {
           name: 'gender',
           data: 'gender',
           width: '4%',
-          className: 'text-center',
           searchable: false,
           render: (data) => (data === null ? '-' : ucfirst(data)),
         },
@@ -315,18 +314,18 @@ jQuery(() => {
           </dd>
         </dl>
         <hr>
-        <div class="row justify-content-center">
-          <div class="col-auto">
-            <a class="btn btn-sm btn-danger" id="delete-user" row-id="${row}">Delete User</a>
+        <div class="row">
+          <div class="col-6 col-lg-3 mb-3 d-flex align-items-center justify-content-center">
+            <a class="btn btn-sm btn-block btn-danger" id="delete-user" row-id="${row}">Delete User</a>
           </div>
-          <div class="col-auto">
-            <a href="${createRoute('admin', `/users/profile/${data.id}`)}" class="btn btn-sm btn-info">View Profile</a>
+          <div class="col-6 col-lg-3 mb-3 d-flex align-items-center justify-content-center">
+            <a href="${createRoute('admin', `/users/profile/${data.id}`)}" class="btn btn-sm btn-block btn-info">View Profile</a>
           </div>
-          <div class="col-auto">
-            ${isAdmin ? `<a class="btn btn-sm bg-navy" id="demote-user" row-id="${row}">Demote</a>` : `<a class="btn btn-sm bg-navy" id="promote-user" row-id="${row}">Promote</a>`}
+          <div class="col-6 col-lg-3 mb-3 d-flex align-items-center justify-content-center">
+            ${isAdmin ? `<a class="btn btn-sm btn-block bg-navy" id="demote-user" row-id="${row}">Demote</a>` : `<a class="btn btn-sm btn-block bg-navy" id="promote-user" row-id="${row}">Promote</a>`}
           </div>
-          <div class="col-auto">
-            <a href="${createRoute('admin', `/users/profile/${data.id}/edit`)}" class="btn btn-sm btn-secondary">Edit Profile</a>
+          <div class="col-6 col-lg-3 mb-3 d-flex align-items-center justify-content-center">
+            <a href="${createRoute('admin', `/users/profile/${data.id}/edit`)}" class="btn btn-sm btn-block btn-secondary">Edit Profile</a>
           </div>
         </div>
       </div>
@@ -334,7 +333,7 @@ jQuery(() => {
 
     const modal = `
     <div class="modal fade col-12">
-      <div class="modal-dialog">
+      <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content elevation-0" style="background-color: transparent; border: 0;">
           <div class="modal-body">
             ${html}
@@ -343,7 +342,9 @@ jQuery(() => {
       </div>
     </div>`;
 
-    $(modal).appendTo('body').modal('show');
+    $(modal).appendTo('body').on('hidden.bs.modal', function () {
+      $(this).remove();
+    }).modal('show');
   };
 
   /**
