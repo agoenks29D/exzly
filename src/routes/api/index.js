@@ -27,6 +27,7 @@ app.get('/', (req, res) => {
   res.json({
     version: getPackageJSON().version,
     timezone: moment.tz.guess(),
+    serverTime: Date.now(),
   });
 });
 
