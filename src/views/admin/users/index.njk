@@ -215,17 +215,16 @@ jQuery(() => {
 
   $('#users-table tbody').on('click', 'a[row-option]', function () {
     const row = $(this).attr('row-id');
-    const data = usersTable.row(row).data();
     const option = $(this).attr('row-option');
 
     if (option === 'overview') {
       handleOverviewData(row);
     } else if (option === 'delete') {
-      handleDeleteData(data);
+      handleDeleteData(row);
     } else if (option === 'force-delete') {
-      handleDeleteData(data, true);
+      handleDeleteData(row, true);
     } else if (option === 'restore') {
-      handleRestoreData(data);
+      handleRestoreData(row);
     }
   });
 
@@ -234,7 +233,7 @@ jQuery(() => {
     const rowId = $(this).attr('row-id');
     $('.modal-backdrop').remove();
     $('.widget-user-modal').modal('hide').remove();
-    handleDeleteData(usersTable.row(rowId).data(), getQueryParams('in-trash') === 'true');
+    handleDeleteData(rowId, getQueryParams('in-trash') === 'true');
   });
 
   $(document).on('click', '#remove-photo-profile', function (e) {
@@ -242,7 +241,7 @@ jQuery(() => {
     const rowId = $(this).attr('row-id');
     $('.modal-backdrop').remove();
     $('.widget-user-modal').modal('hide').remove();
-    handleRemovePhotoProfile(rowId, usersTable.row(rowId).data());
+    handleRemovePhotoProfile(rowId);
   });
 
   $(document).on('click', '#promote-user, #demote-user', function (e) {
@@ -264,7 +263,7 @@ jQuery(() => {
     const isAdmin = data.isAdmin === true;
     const hasPhotoProfile = data.photoProfile !== null;
     const photoProfile = hasPhotoProfile
-      ? `${data.photoProfile}`
+      ? data.photoProfile
       : assetsUrl('/public/assets/adminLTE-3.2.0/img/user1-128x128.jpg');
     const html = `
     <div class="card card-widget widget-user widget-user-modal elevation-3" style="border-radius: 1rem;">
@@ -273,9 +272,7 @@ jQuery(() => {
           <div class="col-12">
             <img src="${assetsUrl('/public/assets/images/x-button.png')}" class="float-right close"  data-dismiss="modal" aria-label="Close" />
           </div>
-          <div class="col-12">
-            <h3 class="widget-user-username text-center">${data.fullName}</h3>
-          </div>
+          <div class="col-12"><h3 class="widget-user-username text-center">${data.fullName}</h3></div>
         </div>
       </div>
       <div class="widget-user-image">
@@ -286,30 +283,28 @@ jQuery(() => {
       <div class="card-body mt-4">
         <div class="row ${!hasPhotoProfile ? 'd-none mt-4' : 'mt-3'}">
           <div class="col-12 d-flex justify-content-center">
-            <a class="btn btn-xs mx-2 btn-dark" id="remove-photo-profile" row-id="${row}">
-              Remove Photo
-            </a>
+            <a class="btn btn-xs mx-2 btn-dark" id="remove-photo-profile" row-id="${row}">Remove Photo</a>
           </div>
         </div>
         <dl class="row mt-2">
-          <dt class="col-3">Full name</dt>
-          <dd class="col-9">
+          <dt class="col-4 col-md-3">Full name</dt>
+          <dd class="col-8 col-md-9">
             ${data.fullName !== null ? data.fullName : '-'}
           </dd>
-          <dt class="col-3">Email</dt>
-          <dd class="col-9">
+          <dt class="col-4 col-md-3">Email</dt>
+          <dd class="col-8 col-md-9">
             ${data.email !== null ? data.email : '-'}
           </dd>
-          <dt class="col-3">Username</dt>
-          <dd class="col-9">
+          <dt class="col-4 col-md-3">Username</dt>
+          <dd class="col-8 col-md-9">
             ${data.username !== null ? data.username : '-'}
           </dd>
-          <dt class="col-3">Gender</dt>
-          <dd class="col-9">
+          <dt class="col-4 col-md-3">Gender</dt>
+          <dd class="col-8 col-md-9">
             ${data.gender !== null ? ucfirst(data.gender) : '-'}
           </dd>
-          <dt class="col-12 col-sm-3">Joined</dt>
-          <dd class="col-12 col-sm-9">
+          <dt class="col-4 col-md-3">Joined</dt>
+          <dd class="col-8 col-md-9">
             ${moment.tz(data.createdAt, getTimezone()).tz(moment.tz.guess()).format('dddd, DD MMMM YYYY, HH:mm')}
           </dd>
         </dl>
@@ -335,9 +330,7 @@ jQuery(() => {
     <div class="modal fade col-12">
       <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content elevation-0" style="background-color: transparent; border: 0;">
-          <div class="modal-body">
-            ${html}
-          </div>
+          <div class="modal-body">${html}</div>
         </div>
       </div>
     </div>`;
@@ -350,10 +343,11 @@ jQuery(() => {
   /**
    * Handle delete data
    *
-   * @param {object} data
+   * @param {number} row
    * @param {boolean} inTrash
    */
-  const handleDeleteData = (data, inTrash = false) => {
+  const handleDeleteData = (row, inTrash = false) => {
+    const data = usersTable.row(row).data();
     Swal.fire({
       title: 'Are you sure?',
       html: `Delete user <b>${data.fullName}</b>`,
@@ -394,9 +388,10 @@ jQuery(() => {
   /**
    * Handle restore data
    *
-   * @param {object} data
+   * @param {number} row
    */
-  const handleRestoreData = (data) => {
+  const handleRestoreData = (row) => {
+    const data = usersTable.row(row).data();
     Swal.fire({
       title: 'Are you sure?',
       html: `Restore user <b>${data.fullName}</b>`,
@@ -436,9 +431,9 @@ jQuery(() => {
    * Handle remove photo profile
    *
    * @param {number} row
-   * @param {object} data
    */
-  const handleRemovePhotoProfile = (row, data) => {
+  const handleRemovePhotoProfile = (row) => {
+    const data = usersTable.row(row).data();
     Swal.fire({
       title: 'Are you sure?',
       html: `Remove photo profile <b>${data.fullName}</b>`,
