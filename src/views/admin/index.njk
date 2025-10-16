@@ -180,7 +180,6 @@ jQuery(() => {
         return $.ajax({
           url: createRoute('api', `/users/profile/${data.id}/photo?remove=true`),
           type: 'PUT',
-          success: () => true,
           error: (xhr) => {
             const error = xhr.responseJSON.message || xhr.statusText;
             Swal.fire({

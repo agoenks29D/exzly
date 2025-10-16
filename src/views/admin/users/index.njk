@@ -219,13 +219,13 @@ jQuery(() => {
     const option = $(this).attr('row-option');
 
     if (option === 'overview') {
-      handleOverviewData(row, usersTable.row(row).data());
+      handleOverviewData(row);
     } else if (option === 'delete') {
-      handleDeleteData(row, data);
+      handleDeleteData(data);
     } else if (option === 'force-delete') {
-      handleDeleteData(row, data, true);
+      handleDeleteData(data, true);
     } else if (option === 'restore') {
-      handleRestoreData(row, data);
+      handleRestoreData(data);
     }
   });
 
@@ -234,7 +234,7 @@ jQuery(() => {
     const rowId = $(this).attr('row-id');
     $('.modal-backdrop').remove();
     $('.widget-user-modal').modal('hide').remove();
-    handleDeleteData(rowId, usersTable.row(rowId).data(), getQueryParams('in-trash') === 'true');
+    handleDeleteData(usersTable.row(rowId).data(), getQueryParams('in-trash') === 'true');
   });
 
   $(document).on('click', '#remove-photo-profile', function (e) {
@@ -258,9 +258,9 @@ jQuery(() => {
    * Handle overview data
    *
    * @param {number} row
-   * @param {object} data
    */
-  const handleOverviewData = (row, data) => {
+  const handleOverviewData = (row) => {
+    const data = usersTable.row(row).data();
     const isAdmin = data.isAdmin === true;
     const hasPhotoProfile = data.photoProfile !== null;
     const photoProfile = hasPhotoProfile
@@ -350,11 +350,10 @@ jQuery(() => {
   /**
    * Handle delete data
    *
-   * @param {number} row
    * @param {object} data
    * @param {boolean} inTrash
    */
-  const handleDeleteData = (row, data, inTrash = false) => {
+  const handleDeleteData = (data, inTrash = false) => {
     Swal.fire({
       title: 'Are you sure?',
       html: `Delete user <b>${data.fullName}</b>`,
@@ -367,7 +366,6 @@ jQuery(() => {
         return $.ajax({
           url: createRoute('api', `/users/profile/${data.id}?in-trash=${inTrash}`),
           type: 'DELETE',
-          success: () => true,
           error: (xhr) => {
             const error = xhr.responseJSON.message || xhr.statusText;
             Swal.fire({
@@ -375,13 +373,14 @@ jQuery(() => {
               title: 'Oops...',
               text: error,
             });
+            usersTable.draw(false);
           },
         });
       },
       allowOutsideClick: () => !Swal.isLoading(),
     }).then((result) => {
-      if (result.isConfirmed) {
-        usersTable.draw(false);
+      usersTable.draw(false);
+      if (result.isConfirmed && result.value.success) {
         SwalToast('top-end', 2000).fire({
           icon: 'success',
           html: `<b>${data.fullName}</b> deleted successfully`,
@@ -395,10 +394,9 @@ jQuery(() => {
   /**
    * Handle restore data
    *
-   * @param {number} row
    * @param {object} data
    */
-  const handleRestoreData = (row, data) => {
+  const handleRestoreData = (data) => {
     Swal.fire({
       title: 'Are you sure?',
       html: `Restore user <b>${data.fullName}</b>`,
@@ -411,7 +409,6 @@ jQuery(() => {
         return $.ajax({
           url: createRoute('api', `/users/profile/${data.id}`),
           type: 'PATCH',
-          success: () => true,
           error: (xhr) => {
             const error = xhr.responseJSON.message || xhr.statusText;
             Swal.fire({
@@ -419,13 +416,14 @@ jQuery(() => {
               title: 'Oops...',
               text: error,
             });
+            usersTable.draw(false);
           },
         });
       },
       allowOutsideClick: () => !Swal.isLoading(),
     }).then((result) => {
-      if (result.isConfirmed) {
-        usersTable.draw(false);
+      usersTable.draw(false);
+      if (result.isConfirmed && result.value.success) {
         SwalToast('top-end', 2000).fire({
           icon: 'success',
           html: `<b>${data.fullName}</b> restored successfully`,
@@ -453,7 +451,6 @@ jQuery(() => {
         return $.ajax({
           url: createRoute('api', `/users/profile/${data.id}/photo?remove=true`),
           type: 'PUT',
-          success: () => true,
           error: (xhr) => {
             const error = xhr.responseJSON.message || xhr.statusText;
             Swal.fire({
@@ -461,13 +458,14 @@ jQuery(() => {
               title: 'Oops...',
               text: error,
             });
+            usersTable.draw(false);
           },
         });
       },
       allowOutsideClick: () => !Swal.isLoading(),
     }).then((result) => {
-      if (result.isConfirmed) {
-        usersTable.draw(false);
+      usersTable.draw(false);
+      if (result.isConfirmed && result.value.success) {
         SwalToast('top-end', 2000).fire({
           icon: 'success',
           html: `<b>${data.fullName}</b> photo profile removed successfully`,
@@ -497,7 +495,6 @@ jQuery(() => {
       preConfirm: () => {
         return $.ajax({
           url: createRoute('api', `/users/${option}/${data.id}`),
-          success: () => true,
           error: (xhr) => {
             const error = xhr.responseJSON.message || xhr.statusText;
             Swal.fire({
@@ -505,19 +502,18 @@ jQuery(() => {
               title: 'Oops...',
               text: error,
             });
+            usersTable.draw(false);
           },
         });
       },
       allowOutsideClick: () => !Swal.isLoading(),
     }).then((result) => {
-      if (result.isConfirmed) {
-        usersTable.draw(false);
+      usersTable.draw(false);
+      if (result.isConfirmed && result.value.success) {
         SwalToast('top-end', 2000).fire({
           icon: 'success',
           html: `<b>${data.fullName}</b> ${isPromote ? 'promoted' : 'demoted'} successfully`,
         });
-
-        $('#deleted-user-count').text(parseInt($('#deleted-user-count').text()) + 1);
       }
     });
   };
