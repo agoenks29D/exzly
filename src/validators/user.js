@@ -12,8 +12,8 @@ const { UserModel } = require('@exzly-models');
 const dataValidation = {
   fullNameMin: 2,
   fullNameMax: 80,
-  usernameMin: 10,
-  usernameMax: 10,
+  usernameMin: 3,
+  usernameMax: 30,
   usernameRegEx: /^[a-zA-Z0-9](?!.*?[._]{2})[a-zA-Z0-9._]{0,28}[a-zA-Z0-9]$/u,
   passwordMin: 6,
 };

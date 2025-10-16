@@ -1,4 +1,14 @@
-const { createURL, randomInt, byteFormat } = require('@exzly-utils');
+const path = require('path');
+
+const {
+  createURL,
+  randomInt,
+  byteFormat,
+  getFileTypeFromBuffer,
+  getFileTypeFromFile,
+} = require('@exzly-utils');
+
+const loadSample = (fileName) => path.join(process.cwd(), '__tests__/samples', fileName);
 
 describe('Utils', () => {
   describe('createURL', () => {
@@ -84,6 +94,40 @@ describe('Utils', () => {
       expect(typeof value).toBe('number');
       expect(value).toBeGreaterThanOrEqual(1);
       expect(value).toBeLessThanOrEqual(10);
+    });
+  });
+
+  describe('getFileTypeFromBuffer', () => {
+    it('should return the correct file type for a known buffer', async () => {
+      const pngHeader = Buffer.from([
+        0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a, 0x00, 0x00, 0x00, 0x0d, 0x49, 0x48, 0x44,
+        0x52,
+      ]);
+      const result = await getFileTypeFromBuffer(pngHeader);
+
+      expect(result).toEqual({ ext: 'png', mime: 'image/png' });
+    });
+
+    it('should return null when file type is unknown or undetectable', async () => {
+      const unknownBuffer = Buffer.from('data that is not a known file signature');
+      const result = await getFileTypeFromBuffer(unknownBuffer);
+
+      expect(result).toBeUndefined();
+    });
+  });
+
+  describe('getFileTypeFromFile', () => {
+    it('should return the correct file type for a known file path', async () => {
+      const filePath = loadSample('exzly-test-200x200.png');
+      const result = await getFileTypeFromFile(filePath);
+
+      expect(result).toEqual({ ext: 'png', mime: 'image/png' });
+    });
+
+    it('should throw error when file path is invalid/file does not exist', async () => {
+      const nonExistentPath = loadSample('non-existent-file-' + Date.now() + '.xyz');
+
+      await expect(getFileTypeFromFile(nonExistentPath)).rejects.toThrow();
     });
   });
 });
