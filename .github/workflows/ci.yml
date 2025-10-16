@@ -169,7 +169,8 @@ jobs:
           !startsWith(github.head_ref, 'dependabot/') &&
           (
             github.ref == 'refs/heads/main' ||
-            github.ref == 'refs/heads/develop'
+            github.ref == 'refs/heads/develop/v1' ||
+            github.ref == 'refs/heads/develop/v2'
           )
         uses: codecov/codecov-action@v5
         with:

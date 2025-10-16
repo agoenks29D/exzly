@@ -463,6 +463,10 @@ describe('RESTful-API: Users', () => {
         .set('Authorization', `Bearer ${usersToken.adminAccessToken}`)
         .expect(404);
     });
+
+    it('test 4: should return 400 when neither userId in URL nor authenticated session is provided', async () => {
+      await request(app).get(createRoute('api', '/users/profile')).expect(400);
+    });
   });
 
   describe('Update user profile', () => {
@@ -699,6 +703,162 @@ describe('RESTful-API: Users', () => {
         .set('Authorization', `Bearer ${usersToken.adminAccessToken}`)
         .send({ email: 'member@exzly.dev', username: 'member' })
         .expect(200);
+    });
+  });
+
+  describe('Promote user as admin', () => {
+    let nonAdminUserId, newUserAccessToken;
+    let newUserUsername = `promotetest_${Date.now()}`;
+    let newUserPassword = 'securepassword';
+
+    beforeAll(async () => {
+      const createUser = await request(app)
+        .post(createRoute('api', '/users'))
+        .set('Authorization', `Bearer ${usersToken.adminAccessToken}`)
+        .send({
+          email: `promotetest_${Date.now()}@exzly.dev`,
+          username: newUserUsername,
+          password: newUserPassword,
+          isAdmin: false,
+          gender: 'female',
+          fullName: 'Promote Test User',
+        });
+      const newUserSignIn = await request(app)
+        .post(createRoute('api', '/auth/sign-in'))
+        .send({ identity: newUserUsername, password: newUserPassword })
+        .expect(200);
+
+      nonAdminUserId = createUser.body.id;
+      newUserUsername = createUser.body.username;
+      newUserPassword = createUser.body.username;
+      newUserAccessToken = newUserSignIn.body.accessToken;
+    });
+
+    it('test 1: should return 401 when access token is not provided', async () => {
+      await request(app)
+        .get(createRoute('api', `/users/promote/${nonAdminUserId}`))
+        .expect(401);
+    });
+
+    it('test 2: should return 403 when non-admin tries to promote a user', async () => {
+      await request(app)
+        .get(createRoute('api', `/users/promote/${nonAdminUserId}`))
+        .set('Authorization', `Bearer ${usersToken.memberAccessToken}`)
+        .expect(403);
+    });
+
+    it('test 3: should return 404 when promoting a non-existing user', async () => {
+      await request(app)
+        .get(createRoute('api', '/users/promote/999999'))
+        .set('Authorization', `Bearer ${usersToken.adminAccessToken}`)
+        .expect(404);
+    });
+
+    it('test 4: should return 200 and promote the user to admin', async () => {
+      await request(app)
+        .get(createRoute('api', `/users/promote/${nonAdminUserId}`))
+        .set('Authorization', `Bearer ${usersToken.adminAccessToken}`)
+        .expect(200)
+        .expect((res) => {
+          expect(res.body.success).toBe(true);
+        });
+    });
+
+    it('test 5: should return 400 when promoting a user who is already an admin', async () => {
+      await request(app)
+        .get(createRoute('api', `/users/promote/${nonAdminUserId}`))
+        .set('Authorization', `Bearer ${usersToken.adminAccessToken}`)
+        .expect(400);
+    });
+
+    it('test 6: should return 403 when newer admin attempts to delete an older user (main admin)', async () => {
+      await request(app)
+        .delete(createRoute('api', `/users/profile/${adminProfile.id}`))
+        .set('Authorization', `Bearer ${newUserAccessToken}`)
+        .expect(403);
+    });
+  });
+
+  describe('Demote user from admin', () => {
+    let testAdminId, testAdminUsername, testAdminPassword, testAdminAccessToken;
+
+    beforeAll(async () => {
+      testAdminUsername = `demotetest_${Date.now()}`;
+      testAdminPassword = 'securepassword';
+
+      const createUser = await request(app)
+        .post(createRoute('api', '/users'))
+        .set('Authorization', `Bearer ${usersToken.adminAccessToken}`)
+        .send({
+          email: `demotetest_${Date.now()}@exzly.dev`,
+          username: testAdminUsername,
+          password: testAdminPassword,
+          isAdmin: true,
+          gender: 'male',
+          fullName: 'Demote Test Admin',
+        });
+
+      const testAdminSignIn = await request(app)
+        .post(createRoute('api', '/auth/sign-in'))
+        .send({ identity: testAdminUsername, password: testAdminPassword })
+        .expect(200);
+
+      // Set test admin id
+      testAdminId = createUser.body.id;
+
+      // Set authorization token
+      testAdminAccessToken = testAdminSignIn.body.accessToken;
+    });
+
+    it('test 1: should return 401 when access token is not provided', async () => {
+      await request(app)
+        .get(createRoute('api', `/users/demote/${testAdminId}`))
+        .expect(401);
+    });
+
+    it('test 2: should return 403 when non-admin tries to demote a user', async () => {
+      await request(app)
+        .get(createRoute('api', `/users/demote/${testAdminId}`))
+        .set('Authorization', `Bearer ${usersToken.memberAccessToken}`)
+        .expect(403);
+    });
+
+    it('test 3: should return 404 when demoting a non-existing user', async () => {
+      await request(app)
+        .get(createRoute('api', '/users/demote/999999'))
+        .set('Authorization', `Bearer ${usersToken.adminAccessToken}`)
+        .expect(404);
+    });
+
+    it('test 4: should return 400 when admin attempts to demote themselves', async () => {
+      await request(app)
+        .get(createRoute('api', `/users/demote/${adminProfile.id}`))
+        .set('Authorization', `Bearer ${usersToken.adminAccessToken}`)
+        .expect(400);
+    });
+
+    it('test 5: should return 403 when demoting an admin with an earlier account creation date', async () => {
+      await request(app)
+        .get(createRoute('api', `/users/demote/1`))
+        .set('Authorization', `Bearer ${testAdminAccessToken}`)
+        .expect(403);
+    });
+
+    it('test 6: should return 200 and demote the user from admin', async () => {
+      await request(app)
+        .get(createRoute('api', `/users/demote/${testAdminId}`))
+        .set('Authorization', `Bearer ${usersToken.adminAccessToken}`)
+        .expect(200)
+        .expect((res) => {
+          expect(res.body.success).toBe(true);
+        });
+    });
+
+    it('test 7: should return 400 when demoting a user who is not an admin', async () => {
+      await request(app)
+        .get(createRoute('api', `/users/demote/${testAdminId}`))
+        .set('Authorization', `Bearer ${usersToken.adminAccessToken}`)
+        .expect(400);
     });
   });
 });

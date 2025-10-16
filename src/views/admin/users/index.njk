@@ -144,7 +144,6 @@ jQuery(() => {
           name: 'gender',
           data: 'gender',
           width: '4%',
-          className: 'text-center',
           searchable: false,
           render: (data) => (data === null ? '-' : ucfirst(data)),
         },
@@ -216,17 +215,16 @@ jQuery(() => {
 
   $('#users-table tbody').on('click', 'a[row-option]', function () {
     const row = $(this).attr('row-id');
-    const data = usersTable.row(row).data();
     const option = $(this).attr('row-option');
 
     if (option === 'overview') {
-      handleOverviewData(row, usersTable.row(row).data());
+      handleOverviewData(row);
     } else if (option === 'delete') {
-      handleDeleteData(row, data);
+      handleDeleteData(row);
     } else if (option === 'force-delete') {
-      handleDeleteData(row, data, true);
+      handleDeleteData(row, true);
     } else if (option === 'restore') {
-      handleRestoreData(row, data);
+      handleRestoreData(row);
     }
   });
 
@@ -235,7 +233,7 @@ jQuery(() => {
     const rowId = $(this).attr('row-id');
     $('.modal-backdrop').remove();
     $('.widget-user-modal').modal('hide').remove();
-    handleDeleteData(rowId, usersTable.row(rowId).data(), getQueryParams('in-trash') === 'true');
+    handleDeleteData(rowId, getQueryParams('in-trash') === 'true');
   });
 
   $(document).on('click', '#remove-photo-profile', function (e) {
@@ -243,7 +241,7 @@ jQuery(() => {
     const rowId = $(this).attr('row-id');
     $('.modal-backdrop').remove();
     $('.widget-user-modal').modal('hide').remove();
-    handleRemovePhotoProfile(rowId, usersTable.row(rowId).data());
+    handleRemovePhotoProfile(rowId);
   });
 
   $(document).on('click', '#promote-user, #demote-user', function (e) {
@@ -259,13 +257,13 @@ jQuery(() => {
    * Handle overview data
    *
    * @param {number} row
-   * @param {object} data
    */
-  const handleOverviewData = (row, data) => {
+  const handleOverviewData = (row) => {
+    const data = usersTable.row(row).data();
     const isAdmin = data.isAdmin === true;
     const hasPhotoProfile = data.photoProfile !== null;
     const photoProfile = hasPhotoProfile
-      ? `${data.photoProfile}`
+      ? data.photoProfile
       : assetsUrl('/public/assets/adminLTE-3.2.0/img/user1-128x128.jpg');
     const html = `
     <div class="card card-widget widget-user widget-user-modal elevation-3" style="border-radius: 1rem;">
@@ -274,9 +272,7 @@ jQuery(() => {
           <div class="col-12">
             <img src="${assetsUrl('/public/assets/images/x-button.png')}" class="float-right close"  data-dismiss="modal" aria-label="Close" />
           </div>
-          <div class="col-12">
-            <h3 class="widget-user-username text-center">${data.fullName}</h3>
-          </div>
+          <div class="col-12"><h3 class="widget-user-username text-center">${data.fullName}</h3></div>
         </div>
       </div>
       <div class="widget-user-image">
@@ -287,46 +283,44 @@ jQuery(() => {
       <div class="card-body mt-4">
         <div class="row ${!hasPhotoProfile ? 'd-none mt-4' : 'mt-3'}">
           <div class="col-12 d-flex justify-content-center">
-            <a class="btn btn-xs mx-2 btn-dark" id="remove-photo-profile" row-id="${row}">
-              Remove Photo
-            </a>
+            <a class="btn btn-xs mx-2 btn-dark" id="remove-photo-profile" row-id="${row}">Remove Photo</a>
           </div>
         </div>
         <dl class="row mt-2">
-          <dt class="col-3">Full name</dt>
-          <dd class="col-9">
+          <dt class="col-4 col-md-3">Full name</dt>
+          <dd class="col-8 col-md-9">
             ${data.fullName !== null ? data.fullName : '-'}
           </dd>
-          <dt class="col-3">Email</dt>
-          <dd class="col-9">
+          <dt class="col-4 col-md-3">Email</dt>
+          <dd class="col-8 col-md-9">
             ${data.email !== null ? data.email : '-'}
           </dd>
-          <dt class="col-3">Username</dt>
-          <dd class="col-9">
+          <dt class="col-4 col-md-3">Username</dt>
+          <dd class="col-8 col-md-9">
             ${data.username !== null ? data.username : '-'}
           </dd>
-          <dt class="col-3">Gender</dt>
-          <dd class="col-9">
+          <dt class="col-4 col-md-3">Gender</dt>
+          <dd class="col-8 col-md-9">
             ${data.gender !== null ? ucfirst(data.gender) : '-'}
           </dd>
-          <dt class="col-12 col-sm-3">Joined</dt>
-          <dd class="col-12 col-sm-9">
+          <dt class="col-4 col-md-3">Joined</dt>
+          <dd class="col-8 col-md-9">
             ${moment.tz(data.createdAt, getTimezone()).tz(moment.tz.guess()).format('dddd, DD MMMM YYYY, HH:mm')}
           </dd>
         </dl>
         <hr>
-        <div class="row justify-content-center">
-          <div class="col-auto">
-            <a class="btn btn-sm btn-danger" id="delete-user" row-id="${row}">Delete User</a>
+        <div class="row">
+          <div class="col-6 col-lg-3 mb-3 d-flex align-items-center justify-content-center">
+            <a class="btn btn-sm btn-block btn-danger" id="delete-user" row-id="${row}">Delete User</a>
           </div>
-          <div class="col-auto">
-            <a href="${createRoute('admin', `/users/profile/${data.id}`)}" class="btn btn-sm btn-info">View Profile</a>
+          <div class="col-6 col-lg-3 mb-3 d-flex align-items-center justify-content-center">
+            <a href="${createRoute('admin', `/users/profile/${data.id}`)}" class="btn btn-sm btn-block btn-info">View Profile</a>
           </div>
-          <div class="col-auto">
-            ${isAdmin ? `<a class="btn btn-sm bg-navy" id="demote-user" row-id="${row}">Demote</a>` : `<a class="btn btn-sm bg-navy" id="promote-user" row-id="${row}">Promote</a>`}
+          <div class="col-6 col-lg-3 mb-3 d-flex align-items-center justify-content-center">
+            ${isAdmin ? `<a class="btn btn-sm btn-block bg-navy" id="demote-user" row-id="${row}">Demote</a>` : `<a class="btn btn-sm btn-block bg-navy" id="promote-user" row-id="${row}">Promote</a>`}
           </div>
-          <div class="col-auto">
-            <a href="${createRoute('admin', `/users/profile/${data.id}/edit`)}" class="btn btn-sm btn-secondary">Edit Profile</a>
+          <div class="col-6 col-lg-3 mb-3 d-flex align-items-center justify-content-center">
+            <a href="${createRoute('admin', `/users/profile/${data.id}/edit`)}" class="btn btn-sm btn-block btn-secondary">Edit Profile</a>
           </div>
         </div>
       </div>
@@ -334,26 +328,26 @@ jQuery(() => {
 
     const modal = `
     <div class="modal fade col-12">
-      <div class="modal-dialog">
+      <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content elevation-0" style="background-color: transparent; border: 0;">
-          <div class="modal-body">
-            ${html}
-          </div>
+          <div class="modal-body">${html}</div>
         </div>
       </div>
     </div>`;
 
-    $(modal).appendTo('body').modal('show');
+    $(modal).appendTo('body').on('hidden.bs.modal', function () {
+      $(this).remove();
+    }).modal('show');
   };
 
   /**
    * Handle delete data
    *
    * @param {number} row
-   * @param {object} data
    * @param {boolean} inTrash
    */
-  const handleDeleteData = (row, data, inTrash = false) => {
+  const handleDeleteData = (row, inTrash = false) => {
+    const data = usersTable.row(row).data();
     Swal.fire({
       title: 'Are you sure?',
       html: `Delete user <b>${data.fullName}</b>`,
@@ -366,7 +360,6 @@ jQuery(() => {
         return $.ajax({
           url: createRoute('api', `/users/profile/${data.id}?in-trash=${inTrash}`),
           type: 'DELETE',
-          success: () => true,
           error: (xhr) => {
             const error = xhr.responseJSON.message || xhr.statusText;
             Swal.fire({
@@ -374,13 +367,14 @@ jQuery(() => {
               title: 'Oops...',
               text: error,
             });
+            usersTable.draw(false);
           },
         });
       },
       allowOutsideClick: () => !Swal.isLoading(),
     }).then((result) => {
-      if (result.isConfirmed) {
-        usersTable.draw(false);
+      usersTable.draw(false);
+      if (result.isConfirmed && result.value.success) {
         SwalToast('top-end', 2000).fire({
           icon: 'success',
           html: `<b>${data.fullName}</b> deleted successfully`,
@@ -395,9 +389,9 @@ jQuery(() => {
    * Handle restore data
    *
    * @param {number} row
-   * @param {object} data
    */
-  const handleRestoreData = (row, data) => {
+  const handleRestoreData = (row) => {
+    const data = usersTable.row(row).data();
     Swal.fire({
       title: 'Are you sure?',
       html: `Restore user <b>${data.fullName}</b>`,
@@ -410,7 +404,6 @@ jQuery(() => {
         return $.ajax({
           url: createRoute('api', `/users/profile/${data.id}`),
           type: 'PATCH',
-          success: () => true,
           error: (xhr) => {
             const error = xhr.responseJSON.message || xhr.statusText;
             Swal.fire({
@@ -418,13 +411,14 @@ jQuery(() => {
               title: 'Oops...',
               text: error,
             });
+            usersTable.draw(false);
           },
         });
       },
       allowOutsideClick: () => !Swal.isLoading(),
     }).then((result) => {
-      if (result.isConfirmed) {
-        usersTable.draw(false);
+      usersTable.draw(false);
+      if (result.isConfirmed && result.value.success) {
         SwalToast('top-end', 2000).fire({
           icon: 'success',
           html: `<b>${data.fullName}</b> restored successfully`,
@@ -437,9 +431,9 @@ jQuery(() => {
    * Handle remove photo profile
    *
    * @param {number} row
-   * @param {object} data
    */
-  const handleRemovePhotoProfile = (row, data) => {
+  const handleRemovePhotoProfile = (row) => {
+    const data = usersTable.row(row).data();
     Swal.fire({
       title: 'Are you sure?',
       html: `Remove photo profile <b>${data.fullName}</b>`,
@@ -452,7 +446,6 @@ jQuery(() => {
         return $.ajax({
           url: createRoute('api', `/users/profile/${data.id}/photo?remove=true`),
           type: 'PUT',
-          success: () => true,
           error: (xhr) => {
             const error = xhr.responseJSON.message || xhr.statusText;
             Swal.fire({
@@ -460,13 +453,14 @@ jQuery(() => {
               title: 'Oops...',
               text: error,
             });
+            usersTable.draw(false);
           },
         });
       },
       allowOutsideClick: () => !Swal.isLoading(),
     }).then((result) => {
-      if (result.isConfirmed) {
-        usersTable.draw(false);
+      usersTable.draw(false);
+      if (result.isConfirmed && result.value.success) {
         SwalToast('top-end', 2000).fire({
           icon: 'success',
           html: `<b>${data.fullName}</b> photo profile removed successfully`,
@@ -496,7 +490,6 @@ jQuery(() => {
       preConfirm: () => {
         return $.ajax({
           url: createRoute('api', `/users/${option}/${data.id}`),
-          success: () => true,
           error: (xhr) => {
             const error = xhr.responseJSON.message || xhr.statusText;
             Swal.fire({
@@ -504,19 +497,18 @@ jQuery(() => {
               title: 'Oops...',
               text: error,
             });
+            usersTable.draw(false);
           },
         });
       },
       allowOutsideClick: () => !Swal.isLoading(),
     }).then((result) => {
-      if (result.isConfirmed) {
-        usersTable.draw(false);
+      usersTable.draw(false);
+      if (result.isConfirmed && result.value.success) {
         SwalToast('top-end', 2000).fire({
           icon: 'success',
           html: `<b>${data.fullName}</b> ${isPromote ? 'promoted' : 'demoted'} successfully`,
         });
-
-        $('#deleted-user-count').text(parseInt($('#deleted-user-count').text()) + 1);
       }
     });
   };

@@ -54,6 +54,9 @@
                     <img src="{{ assetsUrl('/public/assets/adminLTE-3.2.0/img/user-placeholder-128x128.png') }}" alt="User image" id="crop-image" class="center">
                   {% endif %}
                 </div>
+                <div class="overlay d-none" id="loading-preview-photo">
+                  <i class="fas fa-2x fa-sync-alt fa-spin"></i>
+                </div>
               </div>
             </div>
             <div class="col-lg-12">
@@ -63,6 +66,9 @@
                 </div>
                 <div class="card-body justify-content-center">
                   <input type="file" name="user-photo" class="form-control">
+                </div>
+                <div class="overlay d-none" id="loading-upload-photo">
+                  <i class="fas fa-2x fa-sync-alt fa-spin"></i>
                 </div>
                 <div class="card-footer">
                   <button type="button" class="btn btn-sm btn-primary" id="cancel-profile-photo">Cancel</button>
@@ -226,6 +232,7 @@ jQuery(() => {
     croppedCanvas.toBlob((blob) => {
       const formData = new FormData();
       formData.append('photo', blob, 'profile.png');
+      $('#loading-preview-photo, #loading-upload-photo').removeClass('d-none');
 
       $.ajax({
         url: createRoute('api', `/users/profile/${userId}/photo`),
@@ -247,6 +254,7 @@ jQuery(() => {
             icon: 'success',
             text: 'Photo profile changed successfuly',
           });
+          $('#loading-preview-photo, #loading-upload-photo').addClass('d-none');
         },
         error: function (error) {
           cropImage.cropper('destroy');
@@ -254,6 +262,7 @@ jQuery(() => {
             icon: 'error',
             text: error.responseJSON?.message || 'Please try again later',
           });
+          $('#loading-preview-photo, #loading-upload-photo').addClass('d-none');
         },
       });
     });

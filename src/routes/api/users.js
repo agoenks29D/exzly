@@ -284,6 +284,10 @@ app.get(
       );
     }
 
+    if (user.id === req.userId) {
+      return next(httpErrors.BadRequest('Cannot demote yourself'));
+    }
+
     await user.update({ isAdmin: false });
 
     // send response
