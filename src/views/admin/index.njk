@@ -103,9 +103,9 @@ jQuery(() => {
           </div>
         </div>
         <div class="widget-user-image">
-        <a href="${photoProfile}" data-fancybox data-caption="${data.fullName}">
-          <img class="img-circle rounded-circle elevation-2 mt-3" src="${photoProfile}?height=100&width=100" alt="User Avatar" style="height:100px;width:100px;">
-        </a>
+          <a href="${photoProfile}" data-fancybox data-caption="${data.fullName}">
+            <img class="img-circle rounded-circle elevation-2 mt-3" src="${photoProfile}?height=100&width=100" alt="User Avatar" style="height:100px;width:100px;">
+          </a>
         </div>
         <div class="card-body mt-4">
           <div class="row ${!hasPhotoProfile ? 'd-none mt-4' : 'mt-3'}">
@@ -149,7 +149,7 @@ jQuery(() => {
 
     const modal = `
       <div class="modal fade col-12">
-        <div class="modal-dialog">
+        <div class="modal-dialog modal-dialog-centered">
           <div class="modal-content elevation-0" style="background-color: transparent; border: 0;">
             <div class="modal-body">${html}</div>
           </div>
