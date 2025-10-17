@@ -6,6 +6,7 @@ const {
   byteFormat,
   getFileTypeFromBuffer,
   getFileTypeFromFile,
+  isNumeric,
 } = require('@exzly-utils');
 
 const loadSample = (fileName) => path.join(process.cwd(), '__tests__/samples', fileName);
@@ -94,6 +95,38 @@ describe('Utils', () => {
       expect(typeof value).toBe('number');
       expect(value).toBeGreaterThanOrEqual(1);
       expect(value).toBeLessThanOrEqual(10);
+    });
+  });
+
+  describe('isNumeric', () => {
+    it('should return true for integers', () => {
+      expect(isNumeric(123)).toBe(true);
+      expect(isNumeric(0)).toBe(true);
+      expect(isNumeric(-5)).toBe(true);
+    });
+
+    it('should return true for numeric strings (only digits)', () => {
+      expect(isNumeric('456')).toBe(true);
+      expect(isNumeric('0')).toBe(true);
+    });
+
+    it('should return false for floats/decimals', () => {
+      expect(isNumeric(12.3)).toBe(false);
+      expect(isNumeric(-1.5)).toBe(false);
+    });
+
+    it('should return false for strings containing non-digits', () => {
+      expect(isNumeric('123a')).toBe(false);
+      expect(isNumeric('4.5')).toBe(false);
+      expect(isNumeric('')).toBe(false);
+    });
+
+    it('should return false for non-numeric types', () => {
+      expect(isNumeric(null)).toBe(false);
+      expect(isNumeric(undefined)).toBe(false);
+      expect(isNumeric(true)).toBe(false);
+      expect(isNumeric({})).toBe(false);
+      expect(isNumeric([])).toBe(false);
     });
   });
 
