@@ -57,7 +57,16 @@ const createRoute = (routeName, routePath = '') => {
 
 const assetsUrl = (assetPath) => {
   const assetsURL = '{{ app_env.ASSETS_URL }}';
-  return `${assetsURL}${assetPath}`.replace(/\/{2,}/g, '/');
+  const regex = /^(https?:\/\/)?([a-zA-Z0-9-]+\.)+[a-zA-Z]{2,}(\/[^\s]*)?$/;
+
+  assetPath = `${assetPath}`.replace(/\/{2,}/g, '/');
+
+  if (regex.test(assetsURL)) {
+    assetPath = assetPath.replace(/^\/public/, '/').replace(/\/{2,}/g, '/');
+    return assetsURL + assetPath;
+  }
+
+  return assetPath;
 }
 </script>
 <script src="{{ assetsUrl('/public/assets/adminLTE-3.2.0/plugins/jquery/jquery.min.js') }}"></script>

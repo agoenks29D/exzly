@@ -31,7 +31,8 @@ Whether you're creating a business platform, a complex service, or a company-gra
 - [🔧 Tech Stack](#-tech-stack)
 - [📂 Project Structure](#-project-structure)
 - [🏁 Getting Started](#-getting-started)
-  - [Security Settings](#security-settings)
+  - [📦 Asset Management (Git LFS)](#-asset-management-git-lfs)
+  - [🛡️ Security Settings](#️-security-settings)
 - [🌱 Migration and Seeder](#-migration-and-seeder)
 - [🧹 Linter and Formatter](#-linter-and-formatter)
 - [🚀 Running the Project](#-running-the-project)
@@ -169,7 +170,14 @@ To get started with Exzly, follow the steps below:
 
 6. Now, you're ready to run the app! refer to the 👉 [Running the Project](#-running-the-project) section.
 
-### Security Settings
+### 📦 Asset Management (Git LFS)
+
+Exzly uses **[Git Large File Storage (Git LFS)](https://git-lfs.github.com/)** to manage binary assets such as images, logos, and other static files efficiently.
+Git LFS replaces large files in the Git repository with lightweight pointer files and stores the actual binaries separately.
+
+Therefore, **Git LFS must be installed and initialized** before cloning, running, or deploying this project to ensure all assets load correctly.
+
+### 🛡️ Security Settings
 
 Modify the security configurations in the [`/src/config/security.js`](/src/config/security.js) file.
 

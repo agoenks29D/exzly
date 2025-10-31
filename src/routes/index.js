@@ -4,6 +4,7 @@ const morgan = require('morgan');
 const express = require('express');
 const compression = require('compression');
 const { unless } = require('express-unless');
+const { securityConfig } = require('@exzly-config');
 const {
   viewEngineMiddleware,
   fileLoaderMiddleware,
@@ -20,23 +21,7 @@ const adminErrorHandler = require('./admin/error');
 const app = express();
 
 const helmetMiddleware = helmet({
-  contentSecurityPolicy: {
-    useDefaults: true,
-    directives: {
-      defaultSrc: ["'self'"],
-      imgSrc: [
-        'data:',
-        "'self'",
-        'https://picsum.photos',
-        'https://loremflickr.com',
-        'https://fastly.picsum.photos',
-        'https://cdn.jsdelivr.net',
-      ],
-      scriptSrc: ["'self'", (req, res) => `'nonce-${res.locals.nonce}'`],
-      scriptSrcAttr: [(req, res) => `'nonce-${res.locals.nonce}'`],
-      // reportUri: `${process.env.API_ROUTE}/csp-violation-report`,
-    },
-  },
+  contentSecurityPolicy: securityConfig.contentSecurityPolicy,
 });
 
 helmetMiddleware.unless = unless;
@@ -53,7 +38,11 @@ app.set('view engine', 'njk');
 app.use(cors());
 app.use(
   morgan('dev', {
-    skip: () => process.env.NODE_ENV !== 'development',
+    skip: (req) => {
+      const byRegex = /^\/public\//;
+      const isProduction = process.env.NODE_ENV !== 'development';
+      return isProduction || byRegex.test(req.originalUrl);
+    },
   }),
 );
 app.use(compression());
