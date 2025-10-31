@@ -1,4 +1,29 @@
 /**
+ * @typedef {import('express').Request} Request
+ * @typedef {import('express').Response} Response
+ * @typedef {import('express').NextFunction} NextFunction
+ * @typedef {(req: Request, res: Response, next: NextFunction) => string} NonceFunction
+ */
+
+/**
+ * @typedef {Object} CSPDirectives
+ * @property {(string|NonceFunction)[]} defaultSrc - Default content sources. Restricts all resources to the same origin.
+ * @property {(string|NonceFunction)[]} imgSrc - Allowed image sources. Includes self, data URIs, and trusted CDNs.
+ * @property {(string|NonceFunction)[]} scriptSrc - Allowed JavaScript sources. Supports nonces for inline scripts.
+ * @property {(string|NonceFunction)[]} scriptSrcElem - Allowed sources for script elements.
+ * @property {(string|NonceFunction)[]} scriptSrcAttr - Allowed sources for inline script attributes.
+ * @property {string} [reportUri] - Optional URI endpoint for reporting CSP violations.
+ */
+
+/**
+ * @typedef {Object} ContentSecurityPolicy
+ * @property {boolean} useDefaults - Enables Helmet’s default CSP directives.
+ * @property {CSPDirectives} directives - Custom-defined CSP directives that specify allowed content sources.
+ */
+
+const { isValidDomain } = require('@exzly-utils');
+
+/**
  * Allowed MIME types for image files.
  * These are the supported formats for image uploads.
  *
@@ -91,9 +116,47 @@ const rateLimit = {
   forgotPasswordRateLimitDuration: '10m', // default: 10 minutes
 };
 
+/**
+ * Content Security Policy (CSP) configuration.
+ * This policy defines the sources from which content can be loaded, helping to mitigate
+ * cross-site scripting (XSS), data injection, and other code execution attacks.
+ *
+ * The configuration follows Helmet's CSP middleware format and can be customized
+ * based on the application's asset sources and security needs.
+ *
+ * @type {ContentSecurityPolicy}
+ */
+const contentSecurityPolicy = {
+  useDefaults: true,
+  directives: {
+    defaultSrc: ["'self'"],
+    imgSrc: [
+      'data:',
+      "'self'",
+      'https://picsum.photos',
+      'https://loremflickr.com',
+      'https://fastly.picsum.photos',
+      'https://cdn.jsdelivr.net',
+    ],
+    scriptSrc: ["'self'", (req, res) => `'nonce-${res.locals.nonce}'`],
+    scriptSrcElem: ["'self'", (req, res) => `'nonce-${res.locals.nonce}'`],
+    scriptSrcAttr: [(req, res) => `'nonce-${res.locals.nonce}'`],
+    // reportUri: `${process.env.API_ROUTE}/csp-violation-report`,
+  },
+};
+
+if (isValidDomain(process.env.ASSETS_URL)) {
+  const CDN_URL = process.env.ASSETS_URL;
+  contentSecurityPolicy.directives.imgSrc.push(CDN_URL);
+  contentSecurityPolicy.directives.scriptSrc.push(CDN_URL);
+  contentSecurityPolicy.directives.scriptSrcElem.push(CDN_URL);
+  contentSecurityPolicy.directives.scriptSrcAttr.push(CDN_URL);
+}
+
 module.exports = {
   allowedImageMimeTypes,
   refreshTokenExpires,
   passwordResetExpires,
   rateLimit,
+  contentSecurityPolicy,
 };

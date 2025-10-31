@@ -11,7 +11,7 @@ const lodash = require('lodash');
 const nunjucks = require('nunjucks');
 const httpErrors = require('http-errors');
 const { viewEngineHelper } = require('@exzly-helpers');
-const { getPackageJSON, createRoute } = require('@exzly-utils');
+const { getPackageJSON, createRoute, isValidDomain } = require('@exzly-utils');
 
 /**
  * View engine
@@ -74,7 +74,15 @@ module.exports = (express) => {
     );
     viewEngine.addGlobal('assetsUrl', (assetPath) => {
       const assetsURL = process.env.ASSETS_URL || '/';
-      return `${assetsURL}${assetPath}`.replace(/\/{2,}/g, '/');
+
+      assetPath = `${assetPath}`.replace(/\/{2,}/g, '/');
+
+      if (isValidDomain(assetsURL)) {
+        assetPath = assetPath.replace(/^\/public/, '/').replace(/\/{2,}/g, '/');
+        return assetsURL + assetPath;
+      }
+
+      return assetPath;
     });
 
     /**

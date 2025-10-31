@@ -45,4 +45,15 @@ const randomString = (
   return str;
 };
 
-module.exports = { maskEmail, randomString };
+/**
+ * Validate if a string is a valid domain.
+ *
+ * @param {string} domain - The domain to be validated.
+ * @returns {boolean} true if the domain is valid, false otherwise.
+ */
+const isValidDomain = (domain) => {
+  const regex = /^(https?:\/\/)?([a-zA-Z0-9-]+\.)+[a-zA-Z]{2,}(\/[^\s]*)?$/;
+  return regex.test(domain);
+};
+
+module.exports = { maskEmail, randomString, isValidDomain };

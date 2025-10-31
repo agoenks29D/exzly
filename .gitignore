@@ -5,4 +5,5 @@ storage/
 notes/
 logs/
 .env
+.env.*
 *.bak.*
