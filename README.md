@@ -9,7 +9,7 @@
 ![GitHub License](https://img.shields.io/github/license/agoenks29D/exzly)
 ![GitHub Code Size](https://img.shields.io/github/languages/code-size/agoenks29D/exzly)
 
-[![CI - Setup, Test & Coverage](https://github.com/agoenks29D/exzly/actions/workflows/ci.yml/badge.svg?branch=develop)](https://github.com/agoenks29D/exzly/actions/workflows/ci.yml)
+[![CI - Setup, Test & Coverage](https://github.com/agoenks29D/exzly/actions/workflows/ci.yml/badge.svg)](https://github.com/agoenks29D/exzly/actions/workflows/ci.yml)
 [![codecov](https://codecov.io/gh/agoenks29D/exzly/branch/main/graph/badge.svg?token=7UVW9XHW3Y)](https://codecov.io/gh/agoenks29D/exzly)
 
 ## 📖 Description
@@ -36,7 +36,7 @@ Whether you're creating a business platform, a complex service, or a company-gra
 - [🧹 Linter and Formatter](#-linter-and-formatter)
 - [🚀 Running the Project](#-running-the-project)
 - [🧪 Running Tests](#-running-tests)
-- [📬 API Documentation (Postman)](#-api-documentation-postman)
+- [📬 RESTful API Documentation](#-restful-api-documentation)
 - [👤 Default Account](#-default-account)
 - [📄 License](#-license)
 
@@ -204,7 +204,6 @@ Handle database migrations and seeders as follows:
   ```
 
 - **Run specific seeders:**
-
   - Start seeder (used for production, no fake data):
 
     ```bash
@@ -277,11 +276,11 @@ Run test coverage:
 npm run test:cov
 ```
 
-## 📬 API Documentation (Postman)
+## 📬 RESTful API Documentation
 
-You can explore and test all available API endpoints using our public Postman documentation:
+You can explore and test all available API endpoints using our Postman documentation:
 
-👉 [View Exzly Postman Collection](https://www.postman.com/medansoftware/public-projects/collection/sp6dra0/exzly)
+[<p align="center"><img src="images/logo/Postman.png" alt="Postman Logo" width="200"><br><b>Visit the Exzly Postman Collection</b></p>](https://www.postman.com/medansoftware/open-source/collection/sp6dra0/exzly)
 
 ## 👤 Default Account
 
