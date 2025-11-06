@@ -151,11 +151,22 @@ app.post(
 app.post(
   '/refresh-token',
   [authValidator.refreshToken],
-  asyncRoute(async (req, res) => {
+  asyncRoute(async (req, res, next) => {
     const { refreshToken } = matchedData(req, { locations: ['body'] });
+    const findRefreshToken = AuthTokenModel.findOne({
+      where: { token: refreshToken, type: 'refresh-token' },
+    });
     const { userId } = jwtDecode(refreshToken);
-    const accessToken = jwtHelper.createUserToken('access-token', userId);
 
+    if (!findRefreshToken) {
+      return next(httpErrors.Unauthorized('Invalid token'));
+    }
+
+    if (findRefreshToken.isRevoked) {
+      return next(httpErrors.Unauthorized('Token was revoked'));
+    }
+
+    const accessToken = jwtHelper.createUserToken('access-token', userId);
     await AuthTokenModel.create({ type: 'access-token', token: accessToken });
 
     // send response
