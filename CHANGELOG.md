@@ -1,5 +1,64 @@
 # Changelog
 
+## [1.9.0] - 2025-11-07
+
+### Added
+
+- **Security**
+  - Implemented **Content Security Policy (CSP)** configuration using **Helmet** to strengthen protection against cross-site scripting (XSS) and data injection attacks.
+
+- **Utility**
+  - Added new utility function **`isValidDomain`** with comprehensive **unit tests** to validate domain and CDN URLs.
+
+- **Documentation**
+  - Expanded the **README** file with:
+    - **Git LFS documentation**
+    - **RESTful API** section
+    - **Postman logo and collection**
+    - **Continuous Integration (CI) badge**
+
+### Fixed
+
+- **Authentication**
+  - Enhanced **refresh token validation** to prevent reuse of revoked tokens and improve session integrity.
+
+- **Asset Management**
+  - Fixed asset URL issues when using **custom domains or CDN paths**.
+  - Added domain validation logic to prevent **double slashes** or malformed URLs.
+
+- **User Interface**
+  - Fixed alignment and centering issues in **photo preview modals** for admin and user views.
+
+### Changed
+
+- **View Engine**
+  - Improved asset handling to support **external CDN** configurations and domain-based URL generation.
+
+- **Codebase**
+  - Minor refactorings across UI components and middleware for clarity and maintainability.
+
+- **.gitignore**
+  - Extended `.gitignore` to include `.env.*` environment configuration files for better local development isolation.
+
+### Test
+
+- **Utilities**
+  - Added **comprehensive test coverage** for `isValidDomain` and numeric validation utilities.
+  - Ensured validation helpers meet edge case standards through Jest unit tests.
+
+### Chore & CI/CD
+
+- **Dependency Updates**
+  - Upgraded critical dependencies to address security vulnerabilities:
+    - `express-validator`
+    - `validator`
+
+- **Release Management**
+  - Merged all updates from `develop/v1` into `release` for version alignment.
+
+- **Documentation**
+  - Updated and formatted README with new project information, badges, API examples, and Git LFS guidance.
+
 ## [1.8.0] - 2025-10-17
 
 ### Added
