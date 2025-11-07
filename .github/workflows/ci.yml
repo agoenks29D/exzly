@@ -81,10 +81,6 @@ jobs:
           echo "REFRESH_TOKEN_EXPIRES = 1m" >> .env
           echo "PASSWORD_RESET_EXPIRES = 1m" >> .env
 
-          # Object storage GCloud
-          echo "GOOGLE_SERVICE_ACCOUNT = secrets/gcp-key.json" >> .env
-          echo "GOOGLE_CLOUD_BUCKET_NAME = ${{ secrets.GOOGLE_CLOUD_BUCKET_NAME }}" >> .env
-
           # SMTP
           echo "SMTP_PORT = ${{ secrets.SMTP_PORT }}" >> .env
           echo "SMTP_HOST = ${{ secrets.SMTP_HOST }}" >> .env
@@ -96,6 +92,10 @@ jobs:
           echo "WEB_ROUTE = ${{ secrets.WEB_ROUTE }}" >> .env
           echo "API_ROUTE = ${{ secrets.API_ROUTE }}" >> .env
           echo "ADMIN_ROUTE = ${{ secrets.ADMIN_ROUTE }}" >> .env
+
+          # Object storage GCloud
+          echo "GOOGLE_SERVICE_ACCOUNT = secrets/gcp-key.json" >> .env
+          echo "GOOGLE_CLOUD_BUCKET_NAME = ${{ secrets.GOOGLE_CLOUD_BUCKET_NAME }}" >> .env
         working-directory: ${{ github.workspace }}
 
       - name: Read .env file
