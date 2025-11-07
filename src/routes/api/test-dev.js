@@ -1,7 +1,8 @@
 const express = require('express');
 const { securityConfig } = require('@exzly-config');
+const { storageHelper } = require('@exzly-helpers');
 const { storageMiddleware, authMiddleware } = require('@exzly-middlewares');
-const { randomString } = require('@exzly-utils');
+const { randomString, getFileTypeFromBuffer } = require('@exzly-utils');
 
 const app = express.Router();
 
@@ -70,6 +71,27 @@ app.post(
   storageMiddleware.validateFileMimes(securityConfig.allowedImageMimeTypes),
   (req, res) => {
     return res.json(req.file);
+  },
+);
+
+app.post(
+  '/gcloud-upload',
+  storageMiddleware.memoryStorage.single('photo'),
+  storageMiddleware.validateFileMimes(securityConfig.allowedImageMimeTypes),
+  async (req, res) => {
+    const buffer = req.file.buffer;
+    const fileName = randomString(10);
+    const fileType = await getFileTypeFromBuffer(buffer);
+    const bucket = process.env.GOOGLE_CLOUD_BUCKET_NAME;
+    const gcloud = storageHelper.GCloudUpload();
+    const storage = gcloud.bucket(bucket).file(fileName);
+    await storage.save(buffer, {
+      metadata: {
+        contentType: fileType.mime,
+      },
+      public: true,
+    });
+    return res.json({ url: `https://storage.googleapis.com/${bucket}/${fileName}` });
   },
 );
 

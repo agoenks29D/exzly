@@ -45,6 +45,7 @@
     "@exzly-validators": "./src/validators"
   },
   "dependencies": {
+    "@google-cloud/storage": "^7.17.0",
     "chokidar": "^3.6.0",
     "cli-table3": "^0.6.5",
     "compression": "^1.8.0",
