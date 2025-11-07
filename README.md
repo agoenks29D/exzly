@@ -288,7 +288,7 @@ npm run test:cov
 
 You can explore and test all available API endpoints using our Postman documentation:
 
-[<p align="center"><img src="images/logo/Postman.png" alt="Postman Logo" width="200"><br><b>Visit the Exzly Postman Collection</b></p>](https://www.postman.com/medansoftware/open-source/collection/sp6dra0/exzly)
+<p align="center"><a href="https://www.postman.com/medansoftware/open-source/collection/sp6dra0/exzly"><img src="images/logo/Postman.png" alt="Postman Logo" width="200"><br><b>Visit the Exzly Postman Collection</b></a></p>
 
 ## 👤 Default Account
 
