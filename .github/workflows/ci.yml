@@ -75,6 +75,13 @@ jobs:
           echo "REFRESH_TOKEN_EXPIRES = 1m" >> .env
           echo "PASSWORD_RESET_EXPIRES = 1m" >> .env
 
+          # Object storage S3
+          echo "S3_REGION = ${{ secrets.S3_REGION }}" >> .env
+          echo "S3_ENDPOINT = ${{ secrets.S3_ENDPOINT }}" >> .env
+          echo "S3_ACCESS_KEY = ${{ secrets.S3_ACCESS_KEY }}" >> .env
+          echo "S3_SECRET_KEY = ${{ secrets.S3_SECRET_KEY }}" >> .env
+          echo "S3_BUCKET_NAME = ${{ secrets.S3_BUCKET_NAME }}" >> .env
+
           # SMTP
           echo "SMTP_PORT = ${{ secrets.SMTP_PORT }}" >> .env
           echo "SMTP_HOST = ${{ secrets.SMTP_HOST }}" >> .env
