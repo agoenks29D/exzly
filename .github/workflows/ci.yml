@@ -75,6 +75,16 @@ jobs:
           echo "REFRESH_TOKEN_EXPIRES = 1m" >> .env
           echo "PASSWORD_RESET_EXPIRES = 1m" >> .env
 
+          # Oauth Facebook
+          echo "GOOGLE_CLIENT_ID = ${{ secrets.GOOGLE_CLIENT_ID }}" >> .env
+          echo "GOOGLE_CLIENT_SECRET = ${{ secrets.GOOGLE_CLIENT_SECRET }}" >> .env
+          echo "GOOGLE_REDIRECT_URI = ${{ secrets.GOOGLE_REDIRECT_URI }}" >> .env
+
+          # Oauth Google
+          echo "FACEBOOK_APP_ID = ${{ secrets.FACEBOOK_APP_ID }}" >> .env
+          echo "FACEBOOK_APP_SECRET = ${{ secrets.FACEBOOK_APP_SECRET }}" >> .env
+          echo "FACEBOOK_REDIRECT_URI = ${{ secrets.FACEBOOK_REDIRECT_URI }}" >> .env
+
           # SMTP
           echo "SMTP_PORT = ${{ secrets.SMTP_PORT }}" >> .env
           echo "SMTP_HOST = ${{ secrets.SMTP_HOST }}" >> .env
