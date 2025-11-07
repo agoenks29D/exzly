@@ -135,3 +135,11 @@ jQuery(() => {
     window.location.href = $(this).attr('href');
   });
 });
+
+const socket = io({
+  path: '/ws'
+});
+
+socket.on('connect', () => {
+  console.log('websocket connected');
+});
