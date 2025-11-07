@@ -39,6 +39,12 @@ jobs:
             sleep 10
           done
 
+      - name: Create secrets directory
+        run: mkdir -p secrets
+
+      - name: Setup GCP service account file
+        run: echo "${{ secrets.GOOGLE_SERVICE_ACCOUNT }}" > secrets/gcp-key.json
+
       - name: Create env file
         run: |
           echo "TZ = ${{ vars.TZ }}" >> .env
@@ -74,6 +80,10 @@ jobs:
           echo "JWT_EXPIRATION = ${{ secrets.JWT_EXPIRATION }}" >> .env
           echo "REFRESH_TOKEN_EXPIRES = 1m" >> .env
           echo "PASSWORD_RESET_EXPIRES = 1m" >> .env
+
+          # Object storage GCloud
+          echo "GOOGLE_SERVICE_ACCOUNT = secrets/gcp-key.json" >> .env
+          echo "GOOGLE_CLOUD_BUCKET_NAME = ${{ secrets.GOOGLE_CLOUD_BUCKET_NAME }}" >> .env
 
           # SMTP
           echo "SMTP_PORT = ${{ secrets.SMTP_PORT }}" >> .env
