@@ -1,5 +1,6 @@
 const fs = require('fs');
 const path = require('path');
+const { isValidDomain } = require('./string');
 
 /**
  * Reads and parses the package.json file from the current working directory.
@@ -66,8 +67,40 @@ const createRoute = (routeName, routePath = '') => {
   return route.replace(/\/{2,}/g, '/');
 };
 
+/**
+ * Assets URL
+ *
+ * @param {string} assetPath
+ * @returns {string}
+ */
+const assetsURL = (assetPath) => {
+  const assetsURL = process.env.ASSETS_URL || '/';
+
+  assetPath = `${assetPath}`.replace(/\/{2,}/g, '/');
+
+  if (isValidDomain(assetsURL)) {
+    assetPath = assetPath.replace(/^\/public/, '/').replace(/\/{2,}/g, '/');
+    return assetsURL + assetPath;
+  }
+
+  return assetPath;
+};
+
+/**
+ * Pauses the execution for a specified number of milliseconds.
+ *
+ * @function
+ * @param {number} ms - The duration to sleep in milliseconds.
+ * @returns {Promise<void>} A promise that resolves after the given time.
+ */
+const sleep = (ms) => {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+};
+
 module.exports = {
   getPackageJSON,
   createURL,
   createRoute,
+  assetsURL,
+  sleep,
 };
