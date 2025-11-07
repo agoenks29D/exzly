@@ -1,7 +1,8 @@
 const express = require('express');
 const { securityConfig } = require('@exzly-config');
+const { storageHelper } = require('@exzly-helpers');
 const { storageMiddleware, authMiddleware } = require('@exzly-middlewares');
-const { randomString } = require('@exzly-utils');
+const { randomString, getFileTypeFromBuffer } = require('@exzly-utils');
 
 const app = express.Router();
 
@@ -70,6 +71,22 @@ app.post(
   storageMiddleware.validateFileMimes(securityConfig.allowedImageMimeTypes),
   (req, res) => {
     return res.json(req.file);
+  },
+);
+
+app.post(
+  '/s3-upload',
+  storageMiddleware.memoryStorage.single('photo'),
+  storageMiddleware.validateFileMimes(securityConfig.allowedImageMimeTypes),
+  async (req, res) => {
+    const fileType = await getFileTypeFromBuffer(req.file.buffer);
+    const upload = storageHelper.S3Upload('exzly', randomString(10), req.file.buffer, {
+      ContentType: fileType.mime,
+      ContentDisposition: 'inline',
+    });
+
+    const s3Upload = await upload.done();
+    return res.json(s3Upload);
   },
 );
 
