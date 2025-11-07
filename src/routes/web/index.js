@@ -160,6 +160,11 @@ app.get(
   }),
 );
 
+/**
+ * Oauth
+ */
+app.use('/oauth', require('./oauth'));
+
 app.use((req, res, next) => next(httpErrors.NotFound('Page not found')));
 
 module.exports = app;

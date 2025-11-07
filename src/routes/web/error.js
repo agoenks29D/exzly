@@ -7,6 +7,7 @@
 
 const fs = require('fs');
 const path = require('path');
+const { isAxiosError } = require('axios');
 const httpErrors = require('http-errors');
 const { winstonLogger } = require('@exzly-utils');
 
@@ -32,6 +33,18 @@ module.exports = (err, req, res, next) => {
       return res
         .status(err.status)
         .render(`web/errors/default.njk`, { error: err, statusCode: err.statusCode });
+    } else if (isAxiosError(err)) {
+      const regex = /^\/oauth\/([a-zA-Z0-9_-]+)\/callback$/;
+      const oauthError = req.path.match(regex);
+
+      if (oauthError) {
+        const provider = oauthError[1];
+
+        return res.status(401).render(`web/errors/default.njk`, {
+          error: new Error(`${provider} authentication failed`),
+          statusCode: 401,
+        });
+      }
     }
 
     return res.status(500).render(`web/errors/default.njk`, { error: err, statusCode: 500 });

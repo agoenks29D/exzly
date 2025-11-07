@@ -139,14 +139,12 @@ module.exports = (sequelize, DataTypes) => {
         set(value) {
           this.setDataValue('username', value?.toLowerCase());
         },
-        allowNull: false,
       },
       password: {
         type: DataTypes.STRING,
         set(value) {
           this.setDataValue('password', SHA1(value).toString());
         },
-        allowNull: false,
       },
       isAdmin: {
         type: DataTypes.BOOLEAN,
