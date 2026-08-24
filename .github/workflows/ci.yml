@@ -10,20 +10,21 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [20.x]
+        node-version: ['20.x', '21.x', '22.x', '23.x', '24.x']
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v7
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v3
+      - name: Set up pnpm and Node.js
+        uses: pnpm/setup@v1
         with:
-          node-version: ${{ matrix.node-version }}
-          cache: 'npm'
+          version: 11
+          runtime: node@${{ matrix.node-version }}
+          cache: true
 
       - name: Install dependencies
-        run: npm install --include=optional sharp
+        run: pnpm install --frozen-lockfile
 
       - name: Set up MySQL using Docker
         run: docker run --name mysql-test -e MYSQL_ROOT_PASSWORD=password -e MYSQL_DATABASE=exzly -p 3306:3306 -d mysql:8
