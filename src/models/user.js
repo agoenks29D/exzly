@@ -1,6 +1,8 @@
+const crypto = require('node:crypto');
 const qs = require('qs');
-const { SHA1 } = require('crypto-js');
 const { Model, Op } = require('sequelize');
+
+const sha1 = (string) => crypto.createHash('sha1').update(string).digest('hex');
 
 /**
  * @param {import('sequelize').Sequelize} sequelize
@@ -144,7 +146,7 @@ module.exports = (sequelize, DataTypes) => {
       password: {
         type: DataTypes.STRING,
         set(value) {
-          this.setDataValue('password', SHA1(value).toString());
+          this.setDataValue('password', sha1(value).toString());
         },
         allowNull: false,
       },

@@ -11,12 +11,13 @@
  * @property {Date} updated_at - The time when the user's data was last updated.
  */
 
+const crypto = require('node:crypto');
 const moment = require('moment');
-const { SHA1 } = require('crypto-js');
 const { faker } = require('@faker-js/faker');
 
 let lastDate = moment().subtract(1, 'years');
 const startDate = moment().subtract(1, 'years');
+const sha1 = (string) => crypto.createHash('sha1').update(string).digest('hex');
 
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
@@ -60,7 +61,7 @@ module.exports = {
       {
         email: 'admin@exzly.dev',
         username: 'admin',
-        password: SHA1('admin').toString(),
+        password: sha1('admin').toString(),
         is_admin: true,
         full_name: 'Administrator',
         created_at: startDate.toDate(),
@@ -69,7 +70,7 @@ module.exports = {
       {
         email: 'member@exzly.dev',
         username: 'member',
-        password: SHA1('member').toString(),
+        password: sha1('member').toString(),
         is_admin: false,
         full_name: 'Member',
         created_at: startDate.toDate(),
@@ -94,7 +95,7 @@ module.exports = {
         });
         const email = faker.internet.email({ firstName, lastName }).toLowerCase();
         const username = generateUsername(firstName, lastName);
-        const password = SHA1('member').toString();
+        const password = sha1('member').toString();
         const photo_profile = faker.image.personPortrait({ sex: sexType, size: '512' });
 
         lastDate = lastDate.clone().add(8.8, 'hours');

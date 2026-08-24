@@ -1,8 +1,8 @@
+const crypto = require('node:crypto');
 const ms = require('ms');
 const _ = require('lodash');
 const moment = require('moment');
 const express = require('express');
-const { SHA1 } = require('crypto-js');
 const httpErrors = require('http-errors');
 const rateLimit = require('express-rate-limit');
 const { matchedData } = require('express-validator');
@@ -14,6 +14,7 @@ const { randomInt, createURL, maskEmail, jwtDecode } = require('@exzly-utils');
 const { authValidator } = require('@exzly-validators');
 
 const app = express.Router();
+const sha1 = (string) => crypto.createHash('sha1').update(string).digest('hex');
 
 /**
  * Sign up
@@ -72,7 +73,7 @@ app.post(
       return next(httpErrors.Unauthorized('Invalid credentials'));
     }
 
-    if (SHA1(password).toString() !== auth.password) {
+    if (sha1(password).toString() !== auth.password) {
       // invalid password
       return next(httpErrors.Unauthorized('Invalid credentials'));
     }
@@ -260,7 +261,7 @@ app.post(
       code = randomInt(1, 10, 6);
     } while (disallowedCodes.includes(code));
 
-    const sha1 = SHA1(code).toString();
+    const sha1 = sha1(code).toString();
     const resetLink = createURL(req, 'web', `/verification?token=${sha1}`);
 
     await authVerifyService.create({

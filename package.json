@@ -50,7 +50,6 @@
     "cli-table3": "^0.6.5",
     "compression": "^1.8.0",
     "cors": "^2.8.5",
-    "crypto-js": "^4.2.0",
     "debug": "^4.4.3",
     "dotenv": "^17.2.3",
     "express": "^4.21.1",
@@ -101,10 +100,9 @@
     "@types/multer": "^2.0.0",
     "@types/nodemailer": "^7.0.3",
     "@types/nunjucks": "^3.2.6",
-    "@types/sequelize": "^6.12.0",
     "@types/session-file-store": "^1.2.5",
     "@types/uuid": "^10.0.0",
-    "eslint": "^9.39.0",
+    "eslint": "^10.9.0",
     "form-data": "^4.0.3",
     "globals": "^16.4.0",
     "husky": "^9.1.7",
@@ -113,5 +111,6 @@
     "prettier": "3.6.2",
     "sequelize-cli": "^6.6.3",
     "supertest": "^7.1.4"
-  }
+  },
+  "packageManager": "pnpm@11.18.0+sha512.33d83c77da82f49fba836925c6f1b841181ec3132b670639bd012f7075f5c7cf634c5f870147c19aae7478fac01df09d8892e880454896edd23ee9b33757563c"
 }
