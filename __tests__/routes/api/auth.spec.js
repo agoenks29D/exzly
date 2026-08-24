@@ -1,8 +1,8 @@
 const request = require('supertest');
 const { faker } = require('@faker-js/faker');
 const { securityConfig } = require('@exzly-config');
-const { AuthVerifyModel } = require('@exzly-models');
 const app = require('@exzly-routes');
+const { authVerifyService } = require('@exzly-services');
 const { createRoute, randomInt } = require('@exzly-utils');
 
 /**
@@ -230,27 +230,58 @@ describe('RESTful-API: Authentication', () => {
 });
 
 describe('RESTful-API: Authentication - Account recovery', () => {
-  const memberUserId = 2;
-  let resetPasswordCode, resetPaswordCookie, resetPasswordToken;
+  let resetPasswordCode, resetPaswordCookie, resetPasswordToken, recoveryUsername, recoveryUserId;
+
+  beforeAll(async () => {
+    const sexType = faker.person.sexType();
+    const firstName = 'Recover';
+    const lastName = faker.person.lastName(sexType);
+    const fullName = faker.person.fullName({
+      firstName,
+      lastName,
+      sex: sexType,
+    });
+    const email = faker.internet.email({ firstName, lastName }).toLowerCase();
+    const username = generateUsername(firstName, lastName);
+
+    const createUser = await request(app)
+      .post(createRoute('api', '/auth/sign-up'))
+      .send({
+        email,
+        username,
+        password: 'password',
+        fullName,
+      })
+      .expect(201);
+
+    expect(createUser.body).toHaveProperty('user');
+    expect(createUser.body.user).toHaveProperty('id');
+    expect(createUser.body.user).toHaveProperty('username');
+
+    recoveryUserId = createUser.body.user.id;
+    recoveryUsername = createUser.body.user.username;
+
+    expect(recoveryUserId).toBeDefined();
+    expect(recoveryUsername).toBeDefined();
+  });
 
   describe('Valid account recovery', () => {
     it('test 1: should return 200 when identity exists', async () => {
       await request(app)
         .post(createRoute('api', '/auth/forgot-password'))
-        .send({ identity: 'member' })
+        .set('X-Forwarded-For', '123.123.123.122')
+        .send({ identity: recoveryUsername })
         .expect(200);
     });
 
     it('test 2: should return 200 when verification code is valid', async () => {
-      const authVerify = await AuthVerifyModel.findOne({
-        where: { userId: memberUserId },
-        order: [['createdAt', 'DESC']],
-      });
+      const authVerify = await authVerifyService.findLatest({ userId: recoveryUserId });
 
       if (authVerify) {
         resetPasswordCode = authVerify.code;
         const response = await request(app)
           .post(createRoute('api', '/auth/verification'))
+          .set('X-Forwarded-For', '123.123.123.122')
           .send({ code: resetPasswordCode })
           .expect(200);
 
@@ -262,6 +293,7 @@ describe('RESTful-API: Authentication - Account recovery', () => {
     it('test 3: should return 200 when accessing reset-password page', async () => {
       await request(app)
         .get(createRoute('web', 'reset-password'))
+        .set('X-Forwarded-For', '123.123.123.122')
         .set('Cookie', resetPaswordCookie)
         .expect(200);
     });
@@ -269,7 +301,8 @@ describe('RESTful-API: Authentication - Account recovery', () => {
     it('test 4: should return 200 when reset-password token is valid', async () => {
       await request(app)
         .post(createRoute('api', '/auth/reset-password'))
-        .send({ token: resetPasswordToken, newPassword: 'member', confirmPassword: 'member' })
+        .set('X-Forwarded-For', '123.123.123.122')
+        .send({ token: resetPasswordToken, newPassword: 'recovered', confirmPassword: 'recovered' })
         .expect(200);
     });
   });
@@ -285,14 +318,14 @@ describe('RESTful-API: Authentication - Account recovery', () => {
     it('test 2: should return 400 when reset-password token is invalid', async () => {
       await request(app)
         .post(createRoute('api', '/auth/reset-password'))
-        .send({ token: 'invalid token', newPassword: 'member', confirmPassword: 'member' })
+        .send({ token: 'invalid token', newPassword: 'recovered', confirmPassword: 'recovered' })
         .expect(400);
     });
 
     it('test 3: should return 400 when reset-password token is reused', async () => {
       await request(app)
         .post(createRoute('api', '/auth/reset-password'))
-        .send({ token: resetPasswordToken, newPassword: 'member', confirmPassword: 'member' })
+        .send({ token: resetPasswordToken, newPassword: 'recovered', confirmPassword: 'recovered' })
         .expect(400);
     });
 
