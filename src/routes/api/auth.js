@@ -261,12 +261,12 @@ app.post(
       code = randomInt(1, 10, 6);
     } while (disallowedCodes.includes(code));
 
-    const sha1 = sha1(code).toString();
-    const resetLink = createURL(req, 'web', `/verification?token=${sha1}`);
+    const hash = sha1(code).toString();
+    const resetLink = createURL(req, 'web', `/verification?token=${hash}`);
 
     await authVerifyService.create({
       code,
-      sha1,
+      sha1: hash,
       purpose: 'password-reset',
       userId: user.id,
       expiresAt: new Date(Date.now() + ms(securityConfig.passwordResetExpires)),

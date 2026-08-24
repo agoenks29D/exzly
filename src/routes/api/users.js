@@ -148,7 +148,7 @@ app.delete(
  * Restore account
  */
 app.patch(
-  '/profile/:userId',
+  '/profile/:userId/restore',
   authMiddleware.rejectUnauthorized,
   authMiddleware.rejectNonAdmin,
   asyncRoute(async (req, res, next) => {
