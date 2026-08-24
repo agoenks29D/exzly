@@ -19,9 +19,9 @@ jobs:
       - name: Set up pnpm and Node.js
         uses: pnpm/setup@v1
         with:
-          version: 11
           runtime: node@${{ matrix.node-version }}
           cache: true
+          install: true
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
