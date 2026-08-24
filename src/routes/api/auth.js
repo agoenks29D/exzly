@@ -2,7 +2,6 @@ const ms = require('ms');
 const _ = require('lodash');
 const moment = require('moment');
 const express = require('express');
-const { Op } = require('sequelize');
 const { SHA1 } = require('crypto-js');
 const httpErrors = require('http-errors');
 const rateLimit = require('express-rate-limit');
@@ -10,7 +9,7 @@ const { matchedData } = require('express-validator');
 const { securityConfig } = require('@exzly-config');
 const { emailHelper, jwtHelper } = require('@exzly-helpers');
 const { asyncRoute } = require('@exzly-middlewares');
-const { UserModel, AuthVerifyModel, AuthTokenModel } = require('@exzly-models');
+const { userService, authVerifyService, authTokenService } = require('@exzly-services');
 const { randomInt, createURL, maskEmail, jwtDecode } = require('@exzly-utils');
 const { authValidator } = require('@exzly-validators');
 
@@ -36,13 +35,7 @@ app.post(
   [authValidator.signUp],
   asyncRoute(async (req, res) => {
     const { email, username, password, fullName } = matchedData(req, { locations: ['body'] });
-    const newUser = await UserModel.create({
-      email,
-      username,
-      password,
-      fullName,
-    });
-
+    const newUser = await userService.createUser({ email, username, password, fullName });
     const user = _.omit(newUser.toJSON(), ['password', 'createdAt', 'updatedAt']);
     const accessToken = jwtHelper.createUserToken('access-token', user.id);
     const refreshToken = jwtHelper.createUserToken('refresh-token', user.id);
@@ -72,14 +65,7 @@ app.post(
   [authValidator.signIn],
   asyncRoute(async (req, res, next) => {
     const { identity, password } = matchedData(req, { locations: ['body'] });
-    const auth = await UserModel.findOne({
-      where: {
-        [Op.or]: [{ email: identity }, { username: identity }],
-      },
-      attributes: {
-        include: ['password'],
-      },
-    });
+    const auth = await userService.findByIdentity(identity, { withPassword: true });
 
     if (auth === null) {
       // invalid identity
@@ -109,8 +95,7 @@ app.post(
       req.session.save();
     }
 
-    await AuthTokenModel.create({ type: 'access-token', token: accessToken });
-    await AuthTokenModel.create({ type: 'refresh-token', token: refreshToken });
+    await authTokenService.issueTokenPair(accessToken, refreshToken);
 
     // send response
     return res.json({ user, accessToken, refreshToken });
@@ -131,14 +116,8 @@ app.post(
       return next(httpErrors.Unauthorized('Invalid token'));
     }
 
-    await AuthTokenModel.update(
-      { type: 'access-token', isRevoked: true },
-      { where: { token: accessToken } },
-    );
-    await AuthTokenModel.update(
-      { type: 'refresh-token', isRevoked: true },
-      { where: { token: refreshToken } },
-    );
+    await authTokenService.revokeWhere({ token: accessToken });
+    await authTokenService.revokeWhere({ token: refreshToken });
 
     // send response
     return res.json({ success: true });
@@ -153,7 +132,7 @@ app.post(
   [authValidator.refreshToken],
   asyncRoute(async (req, res, next) => {
     const { refreshToken } = matchedData(req, { locations: ['body'] });
-    const findRefreshToken = AuthTokenModel.findOne({
+    const findRefreshToken = await authTokenService.findOne({
       where: { token: refreshToken, type: 'refresh-token' },
     });
     const { userId } = jwtDecode(refreshToken);
@@ -167,7 +146,7 @@ app.post(
     }
 
     const accessToken = jwtHelper.createUserToken('access-token', userId);
-    await AuthTokenModel.create({ type: 'access-token', token: accessToken });
+    await authTokenService.create({ type: 'access-token', token: accessToken });
 
     // send response
     return res.json({ token: accessToken });
@@ -194,7 +173,7 @@ app.post(
   [authValidator.verification],
   asyncRoute(async (req, res, next) => {
     const { code } = matchedData(req, { locations: ['body'] });
-    const authVerify = await AuthVerifyModel.findOne({ where: { code } });
+    const authVerify = await authVerifyService.findByCode(code);
 
     if (!authVerify) {
       // send error : invalid code
@@ -256,18 +235,7 @@ app.post(
   [authValidator.forgotPassword],
   asyncRoute(async (req, res, next) => {
     const { identity } = matchedData(req, { locations: ['body'] });
-    const user = await UserModel.findOne({
-      where: {
-        [Op.or]: [
-          {
-            email: identity,
-          },
-          {
-            username: identity,
-          },
-        ],
-      },
-    });
+    const user = await userService.findByIdentity(identity);
 
     if (!user) {
       // send error : user not found
@@ -295,7 +263,7 @@ app.post(
     const sha1 = SHA1(code).toString();
     const resetLink = createURL(req, 'web', `/verification?token=${sha1}`);
 
-    await AuthVerifyModel.create({
+    await authVerifyService.create({
       code,
       sha1,
       purpose: 'password-reset',
@@ -329,15 +297,7 @@ app.post(
   [authValidator.resetPassword],
   asyncRoute(async (req, res, next) => {
     const { token } = matchedData(req, { locations: ['body'] });
-    const authVerify = await AuthVerifyModel.findOne({
-      where: { token },
-      include: [
-        {
-          model: UserModel,
-          as: 'user',
-        },
-      ],
-    });
+    const authVerify = await authVerifyService.findWithUser({ token });
 
     if (!authVerify) {
       // send error : token doesn't exist

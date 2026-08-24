@@ -6,7 +6,7 @@
  */
 
 const httpErrors = require('http-errors');
-const { UserModel } = require('@exzly-models');
+const { userService } = require('@exzly-services');
 const { createRoute, getRouteName } = require('@exzly-utils');
 const bearerToken = require('./bearer-token');
 
@@ -19,7 +19,7 @@ const getAuthorization = async (req, res, next) => {
   req.userId = req.userId || req.session?.userId;
 
   if (req.userId) {
-    const user = await UserModel.findByPk(req.userId);
+    const user = await userService.findById(req.userId);
 
     if (!user) {
       req.userId = null;

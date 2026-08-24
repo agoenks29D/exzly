@@ -41,6 +41,7 @@
     "@exzly-middlewares": "./src/middlewares",
     "@exzly-models": "./src/models",
     "@exzly-routes": "./src/routes",
+    "@exzly-services": "./src/services",
     "@exzly-utils": "./src/utils",
     "@exzly-validators": "./src/validators"
   },

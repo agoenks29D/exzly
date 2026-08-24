@@ -4,7 +4,7 @@ const httpErrors = require('http-errors');
 const { securityConfig } = require('@exzly-config');
 const { jwtHelper } = require('@exzly-helpers');
 const { authMiddleware, asyncRoute } = require('@exzly-middlewares');
-const { AuthVerifyModel, UserModel } = require('@exzly-models');
+const { authVerifyService, userService } = require('@exzly-services');
 const { createRoute } = require('@exzly-utils');
 
 const app = express.Router();
@@ -60,15 +60,7 @@ app.get(
   '/verification',
   asyncRoute(async (req, res, next) => {
     if (req.query.token) {
-      const authVerify = await AuthVerifyModel.findOne({
-        where: { sha1: req.query.token },
-        include: [
-          {
-            model: UserModel,
-            as: 'user',
-          },
-        ],
-      });
+      const authVerify = await authVerifyService.findWithUser({ sha1: req.query.token });
 
       if (!authVerify) {
         return next(httpErrors.BadRequest('The requested link has expired'));
@@ -136,11 +128,11 @@ app.get('/reset-password', (req, res, next) => {
 app.get(
   '/account',
   asyncRoute(async (req, res) => {
-    if (!req.session.userId) {
+    if (!req.userId) {
       return res.redirect(createRoute('web', 'sign-in'));
     }
 
-    const user = await UserModel.findByPk(req.session.userId);
+    const user = await userService.findById(req.userId);
     return res.render('web/user/account-overview', { user });
   }),
 );
@@ -151,11 +143,11 @@ app.get(
 app.get(
   '/account/setting',
   asyncRoute(async (req, res) => {
-    if (!req.session.userId) {
+    if (!req.userId) {
       return res.redirect(createRoute('web', 'sign-in'));
     }
 
-    const user = await UserModel.findByPk(req.session.userId);
+    const user = await userService.findById(req.userId);
     return res.render('web/user/account-setting', { user });
   }),
 );

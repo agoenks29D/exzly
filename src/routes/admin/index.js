@@ -1,8 +1,7 @@
 const express = require('express');
-const { Op } = require('sequelize');
 const httpErrors = require('http-errors');
-const { UserModel } = require('@exzly-models');
 const { authMiddleware, asyncRoute } = require('@exzly-middlewares');
+const { userService } = require('@exzly-services');
 const { createRoute } = require('@exzly-utils');
 
 const app = express.Router();
@@ -68,14 +67,7 @@ app.get(
   '/users',
   asyncRoute(async (req, res) => {
     return res.render('admin/users/index', {
-      deletedCount: await UserModel.count({
-        where: {
-          deletedAt: {
-            [Op.ne]: null,
-          },
-        },
-        paranoid: false,
-      }),
+      deletedCount: await userService.countTrashed(),
     });
   }),
 );
@@ -93,7 +85,7 @@ app.get('/users/add-new', (req, res) => {
 app.get(
   '/users/profile/:id',
   asyncRoute(async (req, res, next) => {
-    const user = await UserModel.findByPk(req.params.id);
+    const user = await userService.findById(req.params.id);
 
     if (!user) {
       return next(httpErrors.NotFound('User not found'));
@@ -109,7 +101,7 @@ app.get(
 app.get(
   '/users/profile/:id/edit',
   asyncRoute(async (req, res, next) => {
-    const user = await UserModel.findByPk(req.params.id);
+    const user = await userService.findById(req.params.id);
 
     if (!user) {
       return next(httpErrors.NotFound('User not found'));
@@ -129,7 +121,7 @@ app.get(
 app.get(
   '/account',
   asyncRoute(async (req, res) => {
-    const user = await UserModel.findByPk(req.session.userId);
+    const user = await userService.findById(req.userId);
     return res.render('admin/account/index', { user });
   }),
 );
@@ -140,7 +132,7 @@ app.get(
 app.get(
   '/account/setting',
   asyncRoute(async (req, res) => {
-    const user = await UserModel.findByPk(req.session.userId);
+    const user = await userService.findById(req.userId);
     return res.render('admin/account/setting', { user });
   }),
 );
