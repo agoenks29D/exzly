@@ -1,5 +1,124 @@
 # Changelog
 
+## [2.0.0] - 2026-08-25
+
+### Breaking Changes
+
+- **REST API**
+  - Changed user profile update method from **`PUT` to `PATCH`**:
+    - `PUT /api/users/profile` → `PATCH /api/users/profile`
+    - `PUT /api/users/profile/:userId` → `PATCH /api/users/profile/:userId`
+
+  - Changed profile photo update/removal method from **`PUT` to `PATCH`**:
+    - `PUT /api/users/profile/:userId/photo` → `PATCH /api/users/profile/:userId/photo`
+
+  - Changed user credential update method from **`PUT` to `PATCH`**:
+    - `PUT /api/users/credentials/:userId` → `PATCH /api/users/credentials/:userId`
+
+  - Changed the user restore endpoint path to make the restore action explicit:
+    - `PATCH /api/users/profile/:userId` → `PATCH /api/users/profile/:userId/restore`
+
+  - Existing API clients using the previous HTTP methods or restore endpoint must be updated to use the new endpoints.
+
+- **Package Manager**
+  - Migrated the project from **npm to pnpm**.
+  - Removed `package-lock.json` and introduced `pnpm-lock.yaml`.
+  - Added `packageManager` metadata for **pnpm 11.18.0**.
+  - Developers and CI environments should use pnpm for dependency installation and project scripts.
+
+### Added
+
+- **Service Layer**
+  - Introduced a dedicated service layer to centralize business and data-access operations:
+    - `BaseService`
+    - `UserService`
+    - `AuthTokenService`
+    - `AuthVerifyService`
+
+  - Added a new `@exzly-services` module alias for accessing application services.
+  - Added reusable service methods for user lookup, pagination, profile updates, credential updates, deletion, restoration, authentication token handling, and verification records.
+
+- **CI/CD**
+  - Expanded CI test coverage to support **Node.js 22.x and 24.x**.
+  - Updated GitHub Actions workflow to use the pnpm setup action and pnpm-based commands.
+  - Updated GitHub Actions checkout from v3 to v7.
+
+- **Testing**
+  - Improved account recovery tests so they no longer depend on seeded member data.
+  - Account recovery tests now create an isolated test user dynamically.
+  - Added explicit forwarded IP headers to make rate-limit-sensitive authentication tests independent and reliable.
+
+### Changed
+
+- **REST API Semantics**
+  - Updated user modification endpoints to use HTTP `PATCH` for partial resource updates.
+  - Updated profile photo upload/removal operations to use `PATCH`.
+  - Updated user credential updates to use `PATCH`.
+  - Updated restore-user semantics to use the dedicated `/restore` action endpoint.
+
+- **Architecture**
+  - Refactored model operations out of routes, middleware, and web handlers into dedicated service classes.
+  - Routes no longer directly depend on Sequelize models for user, authentication token, and verification operations.
+  - Centralized reusable business and data-access logic to improve consistency and prepare the codebase for future TypeScript migration.
+
+- **Authentication**
+  - Updated authentication middleware and account recovery logic to use the new service layer instead of directly accessing authentication and user models.
+
+- **Dependencies**
+  - Removed the `crypto-js` dependency and replaced SHA-1 hashing in seeders with Node.js native `crypto`.
+  - Removed the unused `@types/sequelize` dependency.
+  - Updated ESLint from **9.x to 10.9.0**.
+  - Refreshed dependency versions and regenerated the lockfile through pnpm.
+
+- **Developer Tooling**
+  - Updated ESLint configuration to use the current flat-config structure and consolidated Node.js/Jest globals.
+  - Added the `@exzly-services` path alias to project configuration and Jest module mappings.
+
+### Fixed
+
+- **Account Recovery Testing**
+  - Removed reliance on the seeded `member` account in account recovery tests.
+  - Improved test isolation and reliability by creating dedicated recovery users for the test suite.
+
+- **REST API Consistency**
+  - Corrected restore-user routing so restoration is represented as an explicit REST action instead of overlapping with the profile update endpoint.
+
+### Test
+
+- **Users API**
+  - Updated user profile, profile photo, credential, and restore tests to match the new `PATCH` endpoints.
+  - Preserved authorization and validation coverage for member and administrator operations.
+
+- **Authentication**
+  - Refactored account recovery tests to use the new authentication verification service.
+  - Improved test independence from seeded data.
+
+### Chore & CI/CD
+
+- **Package Management**
+  - Migrated project dependency management from npm to pnpm.
+  - Replaced `package-lock.json` with `pnpm-lock.yaml`.
+  - Added `pnpm-workspace.yaml` configuration to allow required native package builds.
+
+- **CI/CD**
+  - Migrated remaining CI commands from npm to pnpm.
+  - Expanded the Node.js CI matrix to **22.x and 24.x**.
+  - Updated GitHub Actions setup and caching strategy.
+
+### Migration Notes
+
+Applications consuming the v1 API should update their clients before upgrading to v2:
+
+```text
+PUT   /api/users/profile                 → PATCH /api/users/profile
+PUT   /api/users/profile/:userId         → PATCH /api/users/profile/:userId
+PUT   /api/users/profile/:userId/photo   → PATCH /api/users/profile/:userId/photo
+PUT   /api/users/credentials/:userId     → PATCH /api/users/credentials/:userId
+PATCH /api/users/profile/:userId         → PATCH /api/users/profile/:userId/restore
+```
+
+For development and CI environments, replace npm-based commands with their pnpm equivalents and install dependencies using the new `pnpm-lock.yaml`.
+
 ## [1.9.0] - 2025-11-07
 
 ### Added
