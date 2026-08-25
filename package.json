@@ -20,7 +20,7 @@
     "start:dev": "nodemon",
     "db:demo": "sequelize-cli db:migrate --name base.js && sequelize-cli db:seed --seed demo",
     "db:start": "sequelize-cli db:migrate --name base.js && sequelize-cli db:seed --seed start",
-    "predb:test": "npx sequelize-cli db:migrate:undo --env test",
+    "predb:test": "sequelize-cli db:migrate:undo --env test",
     "db:test": "sequelize-cli db:migrate --name all.js --env test && sequelize-cli db:seed --seed demo --env test",
     "lint": "eslint .",
     "format": "prettier --write --ignore-unknown .",
