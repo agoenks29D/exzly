@@ -10,20 +10,21 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [20.x]
+        node-version: ['22.x', '24.x']
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v7
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v3
+      - name: Set up pnpm and Node.js
+        uses: pnpm/setup@v1
         with:
-          node-version: ${{ matrix.node-version }}
-          cache: 'npm'
+          runtime: node@${{ matrix.node-version }}
+          cache: true
+          install: true
 
       - name: Install dependencies
-        run: npm install --include=optional sharp
+        run: pnpm install --frozen-lockfile
 
       - name: Set up MySQL using Docker
         run: docker run --name mysql-test -e MYSQL_ROOT_PASSWORD=password -e MYSQL_DATABASE=exzly -p 3306:3306 -d mysql:8
@@ -117,9 +118,6 @@ jobs:
           echo "Reading database/config.json"
           cat database/config.json
 
-      - name: 'Database config: database password'
-        run: npm install mysql
-
       - name: Test MySQL Connection
         run: |
           node -e "
@@ -143,10 +141,10 @@ jobs:
           "
 
       - name: Run migration
-        run: npm run db:demo
+        run: pnpm db:demo
 
       - name: Start application in the background
-        run: nohup npm start & echo $! > npm.pid
+        run: nohup pnpm start & echo $! > pnpm.pid
 
       - name: Wait for application to start
         run: sleep 10
@@ -162,7 +160,7 @@ jobs:
           curl --silent --fail $URL || (echo "App failed to start" && exit 1)
 
       - name: Run test
-        run: npm run test:cov
+        run: pnpm test:cov
 
       - name: Upload coverage reports to Codecov
         if: |
@@ -178,7 +176,7 @@ jobs:
           slug: agoenks29D/exzly
 
       - name: Stop application
-        run: kill $(cat npm.pid)
+        run: kill $(cat pnpm.pid)
 
       - name: Capture MySQL logs
         run: docker logs mysql-test

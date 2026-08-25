@@ -97,6 +97,7 @@ const config = {
     '^@exzly-middlewares(.*)$': '<rootDir>/src/middlewares$1',
     '^@exzly-models(.*)$': '<rootDir>/src/models$1',
     '^@exzly-routes(.*)$': '<rootDir>/src/routes$1',
+    '^@exzly-services(.*)$': '<rootDir>/src/services$1',
     '^@exzly-utils(.*)$': '<rootDir>/src/utils$1',
     '^@exzly-validators(.*)$': '<rootDir>/src/validators$1',
   },

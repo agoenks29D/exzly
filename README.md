@@ -9,8 +9,8 @@
 ![GitHub License](https://img.shields.io/github/license/agoenks29D/exzly)
 ![GitHub Code Size](https://img.shields.io/github/languages/code-size/agoenks29D/exzly)
 
-[![CI - Setup, Test & Coverage](https://github.com/agoenks29D/exzly/actions/workflows/ci.yml/badge.svg)](https://github.com/agoenks29D/exzly/actions/workflows/ci.yml)
-[![codecov](https://codecov.io/gh/agoenks29D/exzly/branch/main/graph/badge.svg?token=7UVW9XHW3Y)](https://codecov.io/gh/agoenks29D/exzly)
+[![CI - Setup, Test & Coverage](https://github.com/agoenks29D/exzly-private/actions/workflows/ci.yml/badge.svg)](https://github.com/agoenks29D/exzly-private/actions/workflows/ci.yml)
+[![codecov](https://codecov.io/gh/agoenks29D/exzly/branch/develop/graph/badge.svg?token=7UVW9XHW3Y)](https://codecov.io/gh/agoenks29D/exzly)
 
 ## 📖 Description
 
@@ -288,7 +288,7 @@ npm run test:cov
 
 You can explore and test all available API endpoints using our Postman documentation:
 
-[<p align="center"><img src="images/logo/Postman.png" alt="Postman Logo" width="200"><br><b>Visit the Exzly Postman Collection</b></p>](https://www.postman.com/medansoftware/open-source/collection/sp6dra0/exzly)
+<p align="center"><a href="https://www.postman.com/medansoftware/open-source/collection/sp6dra0/exzly"><img src="images/logo/Postman.png" alt="Postman Logo" width="200"><br><b>Visit the Exzly Postman Collection</b></a></p>
 
 ## 👤 Default Account
 

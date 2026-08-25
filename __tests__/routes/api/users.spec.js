@@ -472,7 +472,7 @@ describe('RESTful-API: Users', () => {
   describe('Update user profile', () => {
     it('test 1: should allow user to update own profile', async () => {
       const response = await request(app)
-        .put(createRoute('api', '/users/profile'))
+        .patch(createRoute('api', '/users/profile'))
         .set('Authorization', `Bearer ${usersToken.memberAccessToken}`)
         .send({ fullName: 'Updated Member', gender: 'female' })
         .expect(200);
@@ -482,7 +482,7 @@ describe('RESTful-API: Users', () => {
 
     it('test 2: should return 403 if user tries to update another user without admin rights', async () => {
       await request(app)
-        .put(createRoute('api', '/users/profile/999'))
+        .patch(createRoute('api', '/users/profile/999'))
         .set('Authorization', `Bearer ${usersToken.memberAccessToken}`)
         .send({ fullName: 'Hacker' })
         .expect(403);
@@ -490,7 +490,7 @@ describe('RESTful-API: Users', () => {
 
     it('test 3: should return 404 when updating non-existing user profile', async () => {
       await request(app)
-        .put(createRoute('api', '/users/profile/0'))
+        .patch(createRoute('api', '/users/profile/0'))
         .set('Authorization', `Bearer ${usersToken.adminAccessToken}`)
         .send({ fullName: 'Hacker' })
         .expect(404);
@@ -560,14 +560,14 @@ describe('RESTful-API: Users', () => {
 
     it('test 1: should return 400 when neither file nor remove param is provided', async () => {
       await request(app)
-        .put(createRoute('api', `/users/profile/${userId}/photo`))
+        .patch(createRoute('api', `/users/profile/${userId}/photo`))
         .set('Authorization', `Bearer ${usersToken.adminAccessToken}`)
         .expect(400);
     });
 
     it('test 2: should return 403 when non-owner member tries to change photo', async () => {
       await request(app)
-        .put(createRoute('api', `/users/profile/${userId}/photo`))
+        .patch(createRoute('api', `/users/profile/${userId}/photo`))
         .set('Authorization', `Bearer ${usersToken.memberAccessToken}`)
         .query({ remove: true })
         .expect(403);
@@ -575,7 +575,7 @@ describe('RESTful-API: Users', () => {
 
     it('test 3: should return 404 when user not found', async () => {
       await request(app)
-        .put(createRoute('api', `/users/profile/0/photo`))
+        .patch(createRoute('api', `/users/profile/0/photo`))
         .set('Authorization', `Bearer ${usersToken.adminAccessToken}`)
         .query({ remove: true })
         .expect(404);
@@ -583,7 +583,7 @@ describe('RESTful-API: Users', () => {
 
     it('test 4: should return 200 when admin removes user profile photo', async () => {
       await request(app)
-        .put(createRoute('api', `/users/profile/1/photo`))
+        .patch(createRoute('api', `/users/profile/1/photo`))
         .set('Authorization', `Bearer ${usersToken.adminAccessToken}`)
         .query({ remove: true })
         .expect(200);
@@ -592,7 +592,7 @@ describe('RESTful-API: Users', () => {
     it('test 5: should return 200 when admin uploads a new user profile photo', async () => {
       const file = fs.createReadStream(loadSample('exzly-test-200x200.png'));
       await request(app)
-        .put(createRoute('api', `/users/profile/1/photo`))
+        .patch(createRoute('api', `/users/profile/1/photo`))
         .attach('photo', file, 'exzly-test-200x200.png')
         .set('Authorization', `Bearer ${usersToken.adminAccessToken}`)
         .expect(200);
@@ -623,18 +623,18 @@ describe('RESTful-API: Users', () => {
         .expect(200);
     });
 
-    it('test 1: should return 200 when admin restores deleted user', async () => {
+    it('test 1: should return 403 when non-admin tries to restore user', async () => {
       await request(app)
-        .patch(createRoute('api', `/users/profile/${deletedUserId}`))
-        .set('Authorization', `Bearer ${usersToken.adminAccessToken}`)
-        .expect(200);
-    });
-
-    it('test 2: should return 403 when non-admin tries to restore user', async () => {
-      await request(app)
-        .patch(createRoute('api', `/users/profile/${deletedUserId}`))
+        .patch(createRoute('api', `/users/profile/${deletedUserId}/restore`))
         .set('Authorization', `Bearer ${usersToken.memberAccessToken}`)
         .expect(403);
+    });
+
+    it('test 2: should return 200 when admin restores deleted user', async () => {
+      await request(app)
+        .patch(createRoute('api', `/users/profile/${deletedUserId}/restore`))
+        .set('Authorization', `Bearer ${usersToken.adminAccessToken}`)
+        .expect(200);
     });
 
     it('test 3: should return 404 when trying to restore non-existing user', async () => {
@@ -648,7 +648,7 @@ describe('RESTful-API: Users', () => {
   describe('Update user credentials', () => {
     it('test 1: should return 403 when member tries to update other user credentials', async () => {
       await request(app)
-        .put(createRoute('api', `/users/credentials/${adminProfile.id}`))
+        .patch(createRoute('api', `/users/credentials/${adminProfile.id}`))
         .set('Authorization', `Bearer ${usersToken.memberAccessToken}`)
         .send({ username: 'hacker' })
         .expect(403);
@@ -656,7 +656,7 @@ describe('RESTful-API: Users', () => {
 
     it('test 2: should return 404 when trying to update non-existing user', async () => {
       await request(app)
-        .put(createRoute('api', `/users/credentials/0`))
+        .patch(createRoute('api', `/users/credentials/0`))
         .set('Authorization', `Bearer ${usersToken.adminAccessToken}`)
         .send({ username: 'noone' })
         .expect(404);
@@ -667,7 +667,7 @@ describe('RESTful-API: Users', () => {
       const newUsername = `updated_${Date.now()}`;
 
       await request(app)
-        .put(createRoute('api', `/users/credentials/${memberProfile.id}`))
+        .patch(createRoute('api', `/users/credentials/${memberProfile.id}`))
         .set('Authorization', `Bearer ${usersToken.adminAccessToken}`)
         .send({ email: newEmail, username: newUsername })
         .expect(200);
@@ -675,7 +675,7 @@ describe('RESTful-API: Users', () => {
 
     it('test 4: should return 200 when admin resets member credentials to default', async () => {
       await request(app)
-        .put(createRoute('api', `/users/credentials/${memberProfile.id}`))
+        .patch(createRoute('api', `/users/credentials/${memberProfile.id}`))
         .set('Authorization', `Bearer ${usersToken.adminAccessToken}`)
         .send({ email: 'member@exzly.dev', username: 'member' })
         .expect(200);
@@ -683,7 +683,7 @@ describe('RESTful-API: Users', () => {
 
     it('test 5: should return 200 when user updates email address or username with their own current email or username', async () => {
       await request(app)
-        .put(createRoute('api', `/users/credentials/${memberProfile.id}`))
+        .patch(createRoute('api', `/users/credentials/${memberProfile.id}`))
         .set('Authorization', `Bearer ${usersToken.memberAccessToken}`)
         .send({ email: 'member@exzly.dev', username: 'member' })
         .expect(200);
@@ -691,7 +691,7 @@ describe('RESTful-API: Users', () => {
 
     it('test 6: should return 400 when member updates email address or username already used by another user', async () => {
       await request(app)
-        .put(createRoute('api', `/users/credentials/${memberProfile.id}`))
+        .patch(createRoute('api', `/users/credentials/${memberProfile.id}`))
         .set('Authorization', `Bearer ${usersToken.memberAccessToken}`)
         .send({ email: 'admin@exzly.dev', username: 'admin' })
         .expect(400);
@@ -699,7 +699,7 @@ describe('RESTful-API: Users', () => {
 
     it('test 7: should return 200 when admin updates email address or username with their own current email or username', async () => {
       await request(app)
-        .put(createRoute('api', `/users/credentials/${memberProfile.id}`))
+        .patch(createRoute('api', `/users/credentials/${memberProfile.id}`))
         .set('Authorization', `Bearer ${usersToken.adminAccessToken}`)
         .send({ email: 'member@exzly.dev', username: 'member' })
         .expect(200);

@@ -236,7 +236,7 @@ jQuery(() => {
 
       $.ajax({
         url: createRoute('api', `/users/profile/${userId}/photo`),
-        method: 'PUT',
+        method: 'PATCH',
         data: formData,
         processData: false,
         contentType: false,
@@ -282,7 +282,7 @@ jQuery(() => {
     const fullName = $('#user-fullName').val();
 
     $.ajax({
-      method: 'PUT',
+      method: 'PATCH',
       url: createRoute('api', `/users/profile/${userId}`),
       data: { gender, fullName },
       success: () => {
@@ -331,7 +331,7 @@ jQuery(() => {
     const confirmPassword = $('#user-confirmPassword').val().length > 0 ? $('#user-confirmPassword').val() : undefined;
 
     $.ajax({
-      method: 'PUT',
+      method: 'PATCH',
       url: createRoute('api', `/users/credentials/${userId}`),
       data: { email, username, newPassword, confirmPassword },
       success: () => {

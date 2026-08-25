@@ -11,7 +11,8 @@
  * @property {Date} updated_at - The time when the user's data was last updated.
  */
 
-const { SHA1 } = require('crypto-js');
+const crypto = require('node:crypto');
+const sha1 = (string) => crypto.createHash('sha1').update(string).digest('hex');
 
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
@@ -25,7 +26,7 @@ module.exports = {
       {
         email: 'admin@exzly.dev',
         username: 'admin',
-        password: SHA1('admin').toString(),
+        password: sha1('admin').toString(),
         is_admin: true,
         full_name: 'Administrator',
         created_at: new Date(),
@@ -34,7 +35,7 @@ module.exports = {
       {
         email: 'member@exzly.dev',
         username: 'member',
-        password: SHA1('member').toString(),
+        password: sha1('member').toString(),
         is_admin: false,
         full_name: 'Member',
         created_at: new Date(),

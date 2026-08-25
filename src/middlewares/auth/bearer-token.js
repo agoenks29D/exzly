@@ -8,7 +8,7 @@
 const httpErrors = require('http-errors');
 const { header, validationResult } = require('express-validator');
 const { jwtVerify } = require('@exzly-utils');
-const { AuthTokenModel } = require('@exzly-models');
+const { authTokenService } = require('@exzly-services');
 
 const whitelist = /auth\/(sign-(up|in|out)|refresh-token|(forgot|reset)-password)|verification/;
 
@@ -33,7 +33,7 @@ module.exports = [
           throw new Error('Invalid token');
         }
 
-        const authToken = await AuthTokenModel.findOne({ where: { token } });
+        const authToken = await authTokenService.findByToken(token);
 
         if (!authToken) {
           throw new Error('Invalid token');
