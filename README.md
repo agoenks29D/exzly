@@ -161,7 +161,7 @@ To get started with Exzly, follow the steps below:
 3. Run the following command to install the required packages:
 
    ```bash
-   npm install
+   pnpm install
    ```
 
 4. Configure the database settings in the [`/database/config.json`](/database/config.json) file according to your environment.
@@ -188,13 +188,13 @@ Handle database migrations and seeders as follows:
 - **Run all migrations and seeders for development:**
 
   ```bash
-  npm run db:demo
+  pnpm db:demo
   ```
 
 - **Run all migrations and seeders for production:**
 
   ```bash
-  npm run db:start
+  pnpm db:start
   ```
 
   This command ensures no fake data is generated.
@@ -231,13 +231,13 @@ Keep your code clean and consistent by using the following commands:
 - **Run linter:**
 
   ```bash
-  npm run lint
+  pnpm lint
   ```
 
 - **Run formatter:**
 
   ```bash
-  npm run format
+  pnpm format
   ```
 
 ## 🚀 Running the Project
@@ -247,13 +247,13 @@ Run the project in the desired mode:
 - **Production mode:**
 
   ```bash
-  npm start
+  pnpm start
   ```
 
 - **Development mode:**
 
   ```bash
-  npm run start:dev
+  pnpm start:dev
   ```
 
 ## 🧪 Running Tests
@@ -263,25 +263,25 @@ Exzly comes with an integrated testing environment using Jest. This setup is rea
 Run all tests:
 
 ```bash
-npm test
+pnpm test
 ```
 
 Run a specific test suite:
 
 ```bash
-npm test -- <test_suite_name>
+pnpm test -- <test_suite_name>
 ```
 
 To prepare the database specifically for the test environment, run the following command:
 
 ```bash
-npm run db:test
+pnpm db:test
 ```
 
 Run test coverage:
 
 ```bash
-npm run test:cov
+pnpm test:cov
 ```
 
 ## 📬 RESTful API Documentation
