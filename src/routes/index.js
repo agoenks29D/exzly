@@ -68,8 +68,8 @@ if (process.env.NODE_ENV !== 'production') {
 /**
  * Set routes and global middleware
  */
-app.use(sessionMiddleware, viewEngineMiddleware(app));
 app.use('/public', express.static('public'));
+app.use(sessionMiddleware, viewEngineMiddleware(app));
 app.use(helmetMiddleware.unless({ path: ['/public'] }));
 app.use(process.env.API_ROUTE, apiRoutes);
 app.use(process.env.ADMIN_ROUTE, adminRoutes);
