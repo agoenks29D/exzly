@@ -1,5 +1,65 @@
 # Changelog
 
+## [2.1.0] - 2026-10-28
+
+### Added
+
+- **User Interface**
+  - Added debugging tools to improve UI development and troubleshooting.
+  - Introduced responsive account layouts for improved usability across different screen sizes.
+- **Visitor Statistics**
+  - Added a visitor statistics module for monitoring website traffic and visitor activity.
+- **User Relationships**
+  - Introduced user relationship functionality to support social interactions between users.
+- **Direct Messaging**
+  - Added direct messaging capabilities to support communication between users.
+- **Live Streaming**
+  - Introduced live streaming functionality to expand the application's real-time interaction capabilities.
+- **Community and Social Media**
+  - Added community-oriented functionality to support social interactions and engagement.
+- **Authentication**
+  - Added Redis-backed authentication token management to support centralized token handling.
+- **Web Interface**
+  - Added OAuth authentication views.
+  - Introduced additional web page templates and live interaction views.
+- **Database**
+  - Added database migration scripts to support new application functionality.
+
+### Changed
+
+- **User Interface**
+  - Improved account layouts to provide a more responsive experience.
+  - Enhanced UI debugging capabilities to simplify development and troubleshooting.
+- **Static Assets**
+  - Improved static asset loading and resource handling.
+- **Authentication**
+  - Extended authentication infrastructure to support Redis-backed token management.
+
+### Fixed
+
+- **Static Asset Management**
+  - Fixed static asset loading errors affecting frontend resources.
+- **User Interface**
+  - Improved responsive layout behavior for account-related pages.
+
+### Documentation
+
+- Added and updated project documentation and development notes.
+- Updated changelog documentation to reflect the latest development changes.
+
+### Chore & CI/CD
+
+- Added deployment workflow configuration.
+- Added application process configuration using `ecosystem.config.js`.
+- Updated supporting scripts and application configuration for ongoing development and deployment.
+
+### Migration Notes
+
+- Review database migrations before upgrading an existing installation.
+- Verify Redis configuration and authentication token handling when deploying the new version.
+- Review deployment and process manager configuration before applying it to production.
+- Back up the database and relevant application configuration before upgrading from v2.0.0.
+
 ## [2.0.0] - 2026-08-25
 
 ### Breaking Changes
