@@ -1,0 +1,541 @@
+<style>
+#ui-debugger {
+  position: fixed;
+  right: 12px;
+  bottom: 12px;
+  z-index: 999999;
+  width: 330px;
+  max-width: calc(100vw - 24px);
+  color: #e5e7eb;
+  background: #111827;
+  border: 1px solid #374151;
+  border-radius: 8px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, .35);
+  font: 12px/1.5 Consolas, Monaco, monospace;
+}
+
+#ui-debugger * {
+  box-sizing: border-box;
+}
+
+#ui-debugger .dbg-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 9px 12px;
+  background: #1f2937;
+  border-radius: 7px 7px 0 0;
+  font-weight: bold;
+  user-select: none;
+}
+
+#ui-debugger .dbg-header-title {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+#ui-debugger .dbg-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  flex-shrink: 0;
+}
+
+#ui-debugger .dbg-content {
+  padding: 10px 12px;
+  max-height: 55vh;
+  overflow: auto;
+}
+
+#ui-debugger .dbg-section {
+  margin-bottom: 12px;
+}
+
+#ui-debugger .dbg-title {
+  color: #60a5fa;
+  margin-bottom: 4px;
+  font-weight: bold;
+}
+
+#ui-debugger .dbg-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 2px 0;
+}
+
+#ui-debugger .dbg-label {
+  color: #d1d5db;
+  flex-shrink: 0;
+}
+
+#ui-debugger .dbg-value {
+  color: #a7f3d0;
+  text-align: right;
+  overflow-wrap: anywhere;
+  min-width: 0;
+}
+
+#ui-debugger .dbg-actions {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  margin-top: 8px;
+}
+
+#ui-debugger button,
+#ui-debugger-toggle {
+  border: 1px solid #4b5563;
+  border-radius: 4px;
+  background: #374151;
+  color: white;
+  padding: 5px 8px;
+  font: inherit;
+  cursor: pointer;
+}
+
+#ui-debugger button:hover {
+  background: #4b5563;
+}
+
+#ui-debugger .dbg-header-actions button {
+  min-width: 27px;
+  height: 25px;
+  padding: 1px 6px;
+  font-size: 15px;
+  line-height: 1;
+}
+
+#ui-debugger .dbg-content button.active {
+  background: #b45309;
+  border-color: #f59e0b;
+}
+
+#ui-debugger .dbg-status {
+  color: #fbbf24;
+  margin-top: 8px;
+  overflow-wrap: anywhere;
+}
+
+#ui-debugger.is-minimized .dbg-content {
+  display: none !important;
+}
+
+#ui-debugger.is-minimized .dbg-header {
+  border-radius: 7px;
+}
+
+#ui-debugger.dbg-hidden,
+#ui-debugger-toggle.dbg-hidden {
+  display: none !important;
+}
+
+#ui-debugger-toggle {
+  position: fixed;
+  right: 12px;
+  bottom: 12px;
+  z-index: 999998;
+  background: #007bff;
+  border: 1px solid #007bff;
+  border-radius: 20px;
+  padding: 9px 14px;
+  box-shadow: 0 3px 12px #0004;
+  font: 13px Arial, sans-serif;
+}
+
+#ui-debugger-toggle:hover {
+  background: #0069d9;
+}
+
+.ui-debugger-highlight {
+  outline: 2px solid #ff3b30 !important;
+  outline-offset: -2px !important;
+  cursor: crosshair !important;
+}
+
+@media (max-width: 480px) {
+  #ui-debugger {
+    right: 8px;
+    bottom: 8px;
+    width: 310px;
+    max-width: calc(100vw - 16px);
+  }
+
+  #ui-debugger .dbg-content {
+    max-height: 50vh;
+  }
+
+  #ui-debugger-toggle {
+    right: 8px;
+    bottom: 8px;
+  }
+}
+</style>
+
+<button id="ui-debugger-toggle" type="button" aria-label="Open UI debugger">🛠 UI Debug</button>
+
+<div id="ui-debugger" class="dbg-hidden">
+  <div class="dbg-header">
+    <span class="dbg-header-title">🛠 UI DEBUGGER</span>
+    <div class="dbg-header-actions">
+      <button id="dbg-minimize" type="button" title="Minimize" aria-label="Minimize">−</button>
+      <button id="dbg-close" type="button" title="Close" aria-label="Close">×</button>
+    </div>
+  </div>
+
+  <div class="dbg-content">
+    <div class="dbg-section">
+      <div class="dbg-title">SCREEN & VIEWPORT</div>
+      <div class="dbg-row">
+        <span class="dbg-label">Screen</span>
+        <span class="dbg-value" id="dbg-screen">-</span>
+      </div>
+      <div class="dbg-row">
+        <span class="dbg-label">Viewport</span>
+        <span class="dbg-value" id="dbg-viewport">-</span>
+      </div>
+      <div class="dbg-row">
+        <span class="dbg-label">Window Inner Size</span>
+        <span class="dbg-value" id="dbg-inner">-</span>
+      </div>
+      <div class="dbg-row">
+        <span class="dbg-label">DPR</span>
+        <span class="dbg-value" id="dbg-dpr">-</span>
+      </div>
+      <div class="dbg-row">
+        <span class="dbg-label">Breakpoint</span>
+        <span class="dbg-value" id="dbg-breakpoint">-</span>
+      </div>
+      <div class="dbg-row">
+        <span class="dbg-label">Orientation</span>
+        <span class="dbg-value" id="dbg-orientation">-</span>
+      </div>
+    </div>
+
+    <div class="dbg-section">
+      <div class="dbg-title">MOUSE & SCROLL</div>
+      <div class="dbg-row">
+        <span class="dbg-label">Mouse X / Y</span>
+        <span class="dbg-value" id="dbg-mouse">-</span>
+      </div>
+      <div class="dbg-row">
+        <span class="dbg-label">Scroll X / Y</span>
+        <span class="dbg-value" id="dbg-scroll">-</span>
+      </div>
+      <div class="dbg-row">
+        <span class="dbg-label">Document Size</span>
+        <span class="dbg-value" id="dbg-document">-</span>
+      </div>
+    </div>
+
+    <div class="dbg-section">
+      <div class="dbg-title">SELECTED ELEMENT</div>
+      <div class="dbg-row">
+        <span class="dbg-label">Tag</span>
+        <span class="dbg-value" id="dbg-tag">-</span>
+      </div>
+      <div class="dbg-row">
+        <span class="dbg-label">ID</span>
+        <span class="dbg-value" id="dbg-id">-</span>
+      </div>
+      <div class="dbg-row">
+        <span class="dbg-label">Class</span>
+        <span class="dbg-value" id="dbg-class">-</span>
+      </div>
+      <div class="dbg-row">
+        <span class="dbg-label">Size</span>
+        <span class="dbg-value" id="dbg-size">-</span>
+      </div>
+      <div class="dbg-row">
+        <span class="dbg-label">Position X / Y</span>
+        <span class="dbg-value" id="dbg-position">-</span>
+      </div>
+      <div class="dbg-row">
+        <span class="dbg-label">Display</span>
+        <span class="dbg-value" id="dbg-display">-</span>
+      </div>
+      <div class="dbg-row">
+        <span class="dbg-label">CSS Position</span>
+        <span class="dbg-value" id="dbg-position-css">-</span>
+      </div>
+      <div class="dbg-row">
+        <span class="dbg-label">Z-Index</span>
+        <span class="dbg-value" id="dbg-zindex">-</span>
+      </div>
+    </div>
+
+    <div class="dbg-actions">
+      <button id="dbg-inspect" type="button">Inspect UI: OFF</button>
+      <button id="dbg-copy" type="button">Copy Info</button>
+      <button id="dbg-refresh" type="button">Refresh</button>
+    </div>
+    <div class="dbg-status" id="dbg-status" role="status">Ready</div>
+  </div>
+</div>
+
+<script type="text/javascript" nonce="{{ nonce }}">
+(function () {
+  'use strict';
+
+  const panel = document.getElementById('ui-debugger');
+  const toggle = document.getElementById('ui-debugger-toggle');
+  const minimizeButton = document.getElementById('dbg-minimize');
+  const closeButton = document.getElementById('dbg-close');
+  const inspectButton = document.getElementById('dbg-inspect');
+  const status = document.getElementById('dbg-status');
+
+  if (!panel || !toggle) return;
+
+  let inspecting = false;
+  let selectedElement = null;
+  let highlightedElement = null;
+
+  const $ = id => document.getElementById(id);
+
+  function setText(id, value) {
+    const el = $(id);
+    if (el) el.textContent = value;
+  }
+
+  function getBreakpoint(width) {
+    if (width < 576) return 'XS (<576px)';
+    if (width < 768) return 'SM (≥576px)';
+    if (width < 992) return 'MD (≥768px)';
+    if (width < 1200) return 'LG (≥992px)';
+    return 'XL (≥1200px)';
+  }
+
+  function updateViewport() {
+    const width = window.innerWidth;
+    const height = window.innerHeight;
+
+    setText('dbg-screen',
+      screen.width + ' × ' + screen.height + ' px');
+
+    setText('dbg-viewport',
+      width + ' × ' + height + ' px');
+
+    setText('dbg-inner',
+      window.innerWidth + ' × ' + window.innerHeight + ' px');
+
+    setText('dbg-dpr',
+      String(window.devicePixelRatio || 1));
+
+    setText('dbg-breakpoint', getBreakpoint(width));
+
+    setText('dbg-orientation',
+      width >= height ? 'Landscape' : 'Portrait');
+
+    setText('dbg-scroll',
+      Math.round(window.scrollX) + ' / ' +
+      Math.round(window.scrollY) + ' px');
+
+    setText('dbg-document',
+      document.documentElement.scrollWidth + ' × ' +
+      document.documentElement.scrollHeight + ' px');
+
+    updateElement(selectedElement);
+  }
+
+  function updateElement(el) {
+    if (!el || !el.isConnected) return;
+
+    const rect = el.getBoundingClientRect();
+    const css = window.getComputedStyle(el);
+
+    setText('dbg-tag', el.tagName.toLowerCase());
+    setText('dbg-id', el.id ? '#' + el.id : '(none)');
+
+    setText('dbg-class',
+      el.classList && el.classList.length
+        ? '.' + Array.from(el.classList).join('.')
+        : '(none)');
+
+    setText('dbg-size',
+      Math.round(rect.width) + ' × ' +
+      Math.round(rect.height) + ' px');
+
+    setText('dbg-position',
+      Math.round(rect.left) + ' / ' +
+      Math.round(rect.top) + ' px');
+
+    setText('dbg-display', css.display);
+    setText('dbg-position-css', css.position);
+    setText('dbg-zindex', css.zIndex);
+  }
+
+  function setStatus(message) {
+    status.textContent = message;
+  }
+
+  function clearHighlight() {
+    if (highlightedElement) {
+      highlightedElement.classList.remove(
+        'ui-debugger-highlight'
+      );
+    }
+
+    highlightedElement = null;
+  }
+
+  function selectElement(el) {
+    if (!el || panel.contains(el) || el === toggle) return;
+
+    clearHighlight();
+
+    selectedElement = el;
+    highlightedElement = el;
+
+    el.classList.add('ui-debugger-highlight');
+
+    updateElement(el);
+    setStatus('Inspecting: ' + el.tagName.toLowerCase());
+  }
+
+  function openPanel() {
+    panel.classList.remove('dbg-hidden');
+    toggle.classList.add('dbg-hidden');
+    updateViewport();
+  }
+
+  function closePanel() {
+    panel.classList.add('dbg-hidden');
+    toggle.classList.remove('dbg-hidden');
+
+    inspecting = false;
+    inspectButton.textContent = 'Inspect UI: OFF';
+    inspectButton.classList.remove('active');
+
+    clearHighlight();
+    setStatus('Panel closed');
+  }
+
+  function minimizePanel() {
+    const minimized = panel.classList.toggle('is-minimized');
+
+    minimizeButton.textContent = minimized ? '+' : '−';
+    minimizeButton.title = minimized ? 'Restore' : 'Minimize';
+
+    minimizeButton.setAttribute(
+      'aria-label',
+      minimized ? 'Restore debugger' : 'Minimize debugger'
+    );
+
+    setStatus(minimized
+      ? 'Panel minimized'
+      : 'Panel restored');
+
+    if (!minimized) updateViewport();
+  }
+
+  toggle.addEventListener('click', openPanel);
+
+  minimizeButton.addEventListener('click', function (event) {
+    event.preventDefault();
+    event.stopPropagation();
+    minimizePanel();
+  });
+
+  closeButton.addEventListener('click', function (event) {
+    event.preventDefault();
+    event.stopPropagation();
+    closePanel();
+  });
+
+  inspectButton.addEventListener('click', function () {
+    inspecting = !inspecting;
+
+    inspectButton.textContent =
+      'Inspect UI: ' + (inspecting ? 'ON' : 'OFF');
+
+    inspectButton.classList.toggle('active', inspecting);
+
+    setStatus(inspecting
+      ? 'Hover over an element. Press ESC to exit.'
+      : 'Inspect mode disabled');
+
+    if (!inspecting) clearHighlight();
+  });
+
+  document.addEventListener('mousemove', function (event) {
+    setText('dbg-mouse',
+      Math.round(event.clientX) + ' / ' +
+      Math.round(event.clientY) + ' px');
+
+    if (!inspecting) return;
+
+    const el = document.elementFromPoint(
+      event.clientX,
+      event.clientY
+    );
+
+    if (!el || panel.contains(el) || el === toggle) return;
+
+    if (el !== selectedElement) selectElement(el);
+  });
+
+  document.addEventListener('keydown', function (event) {
+    if (event.key === 'Escape' && inspecting) {
+      inspecting = false;
+
+      inspectButton.textContent = 'Inspect UI: OFF';
+      inspectButton.classList.remove('active');
+
+      clearHighlight();
+      setStatus('Inspect mode disabled');
+    }
+  });
+
+  window.addEventListener('resize', updateViewport);
+
+  window.addEventListener('scroll', function () {
+    setText('dbg-scroll',
+      Math.round(window.scrollX) + ' / ' +
+      Math.round(window.scrollY) + ' px');
+
+    updateElement(selectedElement);
+  }, true);
+
+  $('dbg-refresh').addEventListener('click', updateViewport);
+
+  $('dbg-copy').addEventListener('click', async function () {
+    const info = [
+      'Screen: ' + $('dbg-screen').textContent,
+      'Viewport: ' + $('dbg-viewport').textContent,
+      'DPR: ' + $('dbg-dpr').textContent,
+      'Breakpoint: ' + $('dbg-breakpoint').textContent,
+      'Orientation: ' + $('dbg-orientation').textContent,
+      'Mouse: ' + $('dbg-mouse').textContent,
+      'Scroll: ' + $('dbg-scroll').textContent,
+      'Document: ' + $('dbg-document').textContent,
+      'Tag: ' + $('dbg-tag').textContent,
+      'ID: ' + $('dbg-id').textContent,
+      'Class: ' + $('dbg-class').textContent,
+      'Size: ' + $('dbg-size').textContent,
+      'Position: ' + $('dbg-position').textContent,
+      'Display: ' + $('dbg-display').textContent,
+      'CSS Position: ' + $('dbg-position-css').textContent,
+      'Z-Index: ' + $('dbg-zindex').textContent
+    ].join('\n');
+
+    try {
+      if (!navigator.clipboard ||
+          !navigator.clipboard.writeText) {
+        throw new Error('Clipboard unavailable');
+      }
+
+      await navigator.clipboard.writeText(info);
+      setStatus('Information copied successfully');
+    } catch (error) {
+      setStatus(
+        'Clipboard unavailable. Use HTTPS or localhost.'
+      );
+    }
+  });
+
+  updateViewport();
+})();
+</script>
